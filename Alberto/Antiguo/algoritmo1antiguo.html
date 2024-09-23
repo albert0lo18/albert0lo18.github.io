@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algoritmo 1</title>
+
+    <script>
+      function Multiplos3() {
+          var a = parseInt(document.getElementById("num1").value);
+          var b = parseInt(document.getElementById("num2").value);
+          var multiplos = "";
+      
+          if (!isNaN(a) && !isNaN(b)) 
+          {
+              if (a <= b) {
+                  for (var i = a; i <= b; i++) {
+                      if (i % 3 == 0) {
+                          multiplos += `${i}` ;
+                      }
+                  }
+              } 
+              else 
+              {
+                  for (var i = a; i >= b; i--) 
+                  { 
+                      if (i % 3 == 0) {
+                          multiplos += `${i} <br>`;
+                      }
+                  }
+              }
+      
+              document.getElementById("out").innerHTML = `Resultado: <br> Los múltiplos de 3 entre ${a} y ${b} son: <br> ${multiplos}`;
+          } else {
+              document.getElementById("out").innerHTML = "Ha ocurrido un error, uno de los datos no es un número";
+          }
+      }
+      </script>
+      
+
+</head>
+<body bgcolor="#e4d4f6">
+         
+    <input type="button" value="< Volver" onclick="window.location.href='index.html';"><br>
+
+    Encontrar e imprimir todos los números comprendidos entre dos enteros que son 
+    múltiplos de 3. <br>
+    dato1 <input type="text" value="" Id="num1"><br>
+    dato2 <input type="text" value="" Id="num2"><br>
+
+    <input type="button" value="encontrar multiplos de 3" onclick="Multiplos3()"><br>
+    <P id="out">Resultado: </P>
+    
+</body>
+</html>

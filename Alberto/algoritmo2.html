@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algoritmo 2</title>
+    <style>
+        body {
+            background-color: #e0f7fa; /* Azul claro */
+            font-family: Arial, sans-serif;
+            text-align: center;
+            color: #004d40; /* Verde oscuro */
+            padding: 20px;
+        }
+        .container {
+            background-color: #ffffff; /* Blanco */
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        input[type="text"] {
+
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            width: 80%;
+            max-width: 300px;
+            margin: 10px 0;
+        }
+        input[type="button"] {
+            background-color: #80deea; /* Azul claro */
+            border: none;
+            border-radius: 5px;
+            color: #ffffff; /* Verde oscuro */
+            padding: 10px 20px;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 16px;
+        }
+        input[type="button"]:hover {
+            background-color: #4dd0e1; /* Azul más oscuro */
+        }
+        #out {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .back-button {
+            background-color: #4fc3f7; /* Azul medio */
+            border: none;
+            border-radius: 5px;
+            color: #ffffff; /* Blanco */
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+        }
+        .back-button:hover {
+            background-color: #29b6f6; /* Azul más oscuro */
+        }
+    </style>
+    <script>
+      function Multiplos3() {
+          var a = parseInt(document.getElementById("num1").value);
+          var b = parseInt(document.getElementById("num2").value);
+          var Contador = 0;
+      
+          if (!isNaN(a) && !isNaN(b)) 
+          {
+              if (a <= b) {
+                  for (var i = a; i <= b; i++) {
+                      if (i % 3 == 0) {
+                          Contador++;
+                      }
+                  }
+              } else 
+              {
+                  for (var i = a; i >= b; i--) 
+                  { 
+                      if (i % 3 == 0) {
+                          Contador++;
+                      }
+                  }
+              }
+      
+              document.getElementById("out").innerHTML = `Resultado: <br> La cantidad de múltiplos de 3 entre ${a} y ${b} son: ${Contador}`;
+          } else {
+              document.getElementById("out").innerHTML = "Ha ocurrido un error, uno de los datos no es un número";
+          }
+      }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">&lt; Volver</a>
+        <h2>Encontrar e imprimir la cantidad de los números comprendidos entre dos enteros que son múltiplos de 3</h2>
+        <input type="text" id="num1" placeholder="dato 1"><br>
+        <input type="text" id="num2" placeholder="dato 2"><br>
+        <input type="button" value="Encontrar múltiplos de 3" onclick="Multiplos3()"><br>
+        <p id="out">Resultado: </p>
+    </div>
+</body>
+</html>
