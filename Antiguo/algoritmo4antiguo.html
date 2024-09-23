@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algoritmo 4</title>
+
+    <script>
+        function diosnacci() {
+            var a = parseInt(document.getElementById("num1").value);
+            var anterior = 0;
+            var actual = 0;
+            var siguiente = 1;
+            var sucesion = "";  // Inicializar la variable
+  
+            if (!isNaN(a) && a >= 0) {
+                do {
+
+                    if((anterior + actual)<=a)
+                    {
+                        sucesion += `${actual}, `;
+                    }
+                    else{
+                    sucesion += `${actual}. `;
+                    }
+                    anterior = actual;
+                    actual = siguiente;
+                    siguiente = (anterior + actual);
+                
+                } while ((actual) <= a)
+        
+                document.getElementById("out").innerHTML = `Resultado: <br> La sucesión de Fibonacci hasta el límite solicitado es: <br> ${sucesion}`;
+            } else {
+                document.getElementById("out").innerHTML = "Ha ocurrido un error, no es un número o no es entero positivo";
+            }
+        }
+      </script>
+      
+      <style>
+        body {
+               font-size: 25px;
+           }
+   
+           p {
+               font-size: 25px;
+           }
+   </style>
+
+
+</head>
+<body bgcolor="#e4d4f6">
+    <input type="button" value="< Volver" onclick="window.location.href='index.html';"><br>
+
+    Encontrar e imprimir las potencias al cubo de los numeros pares naturales hasta un limite. <br> <br>
+    Limite: <input type="text" value="" Id="num1"><br> <br>
+
+
+    <input type="button" value="Potencias al cubo" onclick="diosnacci()"><br>
+    <P id="out">Resultado: </P>
+    
+</body>
+</html>
