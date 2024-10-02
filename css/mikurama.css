@@ -1,0 +1,30 @@
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0; /* Fondo general */
+}
+
+.imagen {
+    width: 100px;
+    height: 100px;
+}
+
+table {
+    background-image: url("./img/fondo1.jpg");
+    background-size: cover; /* Asegura que el fondo cubra todo el espacio */
+    display: inline-table;
+}
+
+h1 {
+    display: inline;
+}
+
+input[type=button] {
+    font-size: larger;
+    background-color: bisque;
+}
+
+#contador {
+    margin-top: 20px;
+}
