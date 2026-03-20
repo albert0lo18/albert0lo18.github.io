@@ -23,6 +23,8 @@
             background: white; padding: 10px; border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;
         }
+        /* Ajuste para evitar saltos de línea en la tabla */
+        th { white-space: nowrap; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans overflow-hidden">
@@ -120,7 +122,7 @@
                         <table class="w-full text-left text-xs" id="coloniaTable">
                             <thead class="bg-slate-50 text-slate-400 font-black uppercase text-[9px] tracking-widest">
                                 <tr>
-                                    <th class="px-6 py-4">Colonia</th>
+                                    <th class="px-6 py-4 w-1/3">Colonia</th>
                                     <th class="px-6 py-4">Ruta / Distancia</th>
                                     <th class="px-6 py-4 text-center">Tiempo en Sitio</th>
                                     <th class="px-6 py-4 text-right">Carga Acum. (T)</th>
@@ -162,7 +164,6 @@
 
         function initTrucks() {
             truckMetrics = {};
-            // Inicializamos un rango amplio para cubrir rutas como la 4003
             for (let i = 1; i <= 5000; i++) {
                 truckMetrics[i] = {
                     distanciaTotal: 0,
@@ -204,7 +205,6 @@
             reiniciarSistema();
         }
 
-        // --- FUNCIÓN DE CARGA DESDE EL SERVIDOR ---
         async function cargarDatosAutomaticos() {
             try {
                 const respuesta = await fetch('recoleccion-basura-hermosillo.json');
@@ -236,24 +236,10 @@
                 
                 reiniciarSistema();
                 for(let i = 0; i < 15; i++) { simularOperacion(true); }
-                console.log("SITRAH: Datos de Hermosillo cargados.");
-
             } catch (error) {
                 console.error("Error al cargar JSON:", error);
             }
         }
-
-        document.getElementById('fileInput').addEventListener('change', function(e) {
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                const data = new Uint8Array(evt.target.result);
-                const workbook = XLSX.read(data, { type: 'array' });
-                const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
-                // Simulación de carga manual si se requiere
-                console.log("Carga manual detectada");
-            };
-            reader.readAsArrayBuffer(e.target.files[0]);
-        });
 
         function reiniciarSistema() {
             Object.keys(sectoresInfo).forEach(s => sectoresInfo[s].carga = 0);
@@ -314,18 +300,18 @@
                         <div class="font-bold text-slate-700">${c.col}</div>
                         <div class="text-[9px] text-slate-400 uppercase tracking-tighter">Sup: ${c.sup} | Turno: ${c.turno}</div>
                     </td>
-                    <td class="px-6 py-4">
+                    <td class="px-6 py-4 whitespace-nowrap">
                         <span class="px-2 py-0.5 rounded text-[9px] font-black text-white" style="background:${sectoresInfo[c.sector].color}">
                             #${c.r} / ${c.sector.toUpperCase()}
                         </span>
                         <div class="text-[10px] mt-1 text-slate-500 font-bold italic">${distRuta.toFixed(2)} KM</div>
                     </td>
-                    <td class="px-6 py-4 text-center">
+                    <td class="px-6 py-4 text-center whitespace-nowrap">
                         <span class="bg-slate-100 px-3 py-1 rounded-full font-mono font-bold text-slate-600">
                             <i class="far fa-clock text-emerald-500 mr-1"></i>${c.tiempoPermanencia} min
                         </span>
                     </td>
-                    <td class="px-6 py-4 text-right font-black text-slate-700 text-sm">${c.carga.toFixed(2)}</td>
+                    <td class="px-6 py-4 text-right font-black text-slate-700 text-sm whitespace-nowrap">${c.carga.toFixed(2)}</td>
                 `;
                 tb.appendChild(tr);
             });
