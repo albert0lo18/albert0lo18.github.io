@@ -23,7 +23,6 @@
             background: white; padding: 10px; border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;
         }
-        /* Ajuste para evitar saltos de línea en la tabla */
         th { white-space: nowrap; }
     </style>
 </head>
@@ -164,13 +163,14 @@
 
         function initTrucks() {
             truckMetrics = {};
-            for (let i = 1; i <= 5000; i++) {
+            // Configuración solicitada: 25 Eléctricos, 75 Diesel (Total 100)
+            for (let i = 1; i <= 100; i++) {
                 truckMetrics[i] = {
                     distanciaTotal: 0,
                     ultimaLat: origenHMO[0],
                     ultimaLng: origenHMO[1],
                     energia: 100,
-                    tipo: i % 4 === 0 ? 'Eléctrico' : 'Diesel',
+                    tipo: i <= 25 ? 'Eléctrico' : 'Diesel',
                     activo: false 
                 };
             }
@@ -214,7 +214,10 @@
                 initTrucks(); 
 
                 coloniasData = datos.map(row => {
-                    const rutaId = parseInt(row["RUTA"]) || 1;
+                    let rutaId = parseInt(row["RUTA"]) || 1;
+                    // Ajuste dinámico si el ID del JSON supera 100 para no romper el objeto truckMetrics
+                    if (rutaId > 100) rutaId = (rutaId % 100) + 1;
+                    
                     if(truckMetrics[rutaId]) truckMetrics[rutaId].activo = true;
 
                     return {
