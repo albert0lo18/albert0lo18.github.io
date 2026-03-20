@@ -135,27 +135,16 @@
             <div id="view-flota" class="hidden p-8 overflow-y-auto h-full bg-slate-50 flex-1">
                 <div class="max-w-6xl mx-auto">
                     <div class="mb-8 border-b pb-6">
-                        <h2 class="text-3xl font-black text-slate-900 italic uppercase">Telemetría de <span class="text-emerald-500">100 Unidades</span></h2>
-                        <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">25 Eléctricos | 75 Diesel</p>
+                        <h2 class="text-3xl font-black text-slate-900 italic uppercase">Telemetría de Unidades</h2>
+                        <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Estado en tiempo real de la flota activa</p>
                     </div>
-                    <div id="truck-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        </div>
+                    <div id="truck-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
                 </div>
             </div>
-
         </main>
     </div>
 
     <script>
-        // --- DATOS DE AUTOCARGA (Reemplaza estos ejemplos con tus datos del Excel) ---
-        const datosAutocarga = [
-            { "RUTA": 1, "SECTOR": "Centro", "COLONIA": "Colonia Centro", "SUPERVISOR": "García" },
-            { "RUTA": 2, "SECTOR": "Norte", "COLONIA": "Balderrama", "SUPERVISOR": "Martínez" },
-            { "RUTA": 3, "SECTOR": "Sur", "COLONIA": "Palo Verde", "SUPERVISOR": "López" },
-            { "RUTA": 4, "SECTOR": "Centro", "COLONIA": "San Benito", "SUPERVISOR": "García" },
-            { "RUTA": 5, "SECTOR": "Norte", "COLONIA": "Sahuaro", "SUPERVISOR": "Martínez" }
-        ];
-
         let coloniasData = [];
         let truckMetrics = {}; 
         let truckMarkers = {}; 
@@ -173,13 +162,14 @@
 
         function initTrucks() {
             truckMetrics = {};
-            for (let i = 1; i <= 100; i++) {
+            // Inicializamos un rango amplio para cubrir rutas como la 4003
+            for (let i = 1; i <= 5000; i++) {
                 truckMetrics[i] = {
                     distanciaTotal: 0,
                     ultimaLat: origenHMO[0],
                     ultimaLng: origenHMO[1],
                     energia: 100,
-                    tipo: i <= 25 ? 'Eléctrico' : 'Diesel',
+                    tipo: i % 4 === 0 ? 'Eléctrico' : 'Diesel',
                     activo: false 
                 };
             }
@@ -195,7 +185,7 @@
         }
 
         function limpiarSector(sector) {
-            if (!sector) return "Centro";
+            if (!sector) return "Mixto";
             let s = sector.toString();
             if (s.includes("Centro")) return "Centro";
             if (s.includes("Norte")) return "Norte";
@@ -214,47 +204,53 @@
             reiniciarSistema();
         }
 
-        // --- NUEVA FUNCIÓN PARA PROCESAR LOS DATOS AUTOMÁTICAMENTE ---
-        function cargarDatosAutomaticos() {
-            initTrucks(); 
-            coloniasData = datosAutocarga.map(row => {
-                const rawId = parseInt(row["RUTA"] || row["Ruta"]) || 1;
-                const rutaId = ((rawId - 1) % 100) + 1;
-                truckMetrics[rutaId].activo = true;
+        // --- FUNCIÓN DE CARGA DESDE EL SERVIDOR ---
+        async function cargarDatosAutomaticos() {
+            try {
+                const respuesta = await fetch('recoleccion-basura-hermosillo.json');
+                if (!respuesta.ok) throw new Error("Archivo no encontrado");
+                
+                const datos = await respuesta.json();
+                initTrucks(); 
 
-                return {
-                    r: rutaId,
-                    sector: limpiarSector(row["SECTOR"] || row["Sector"]),
-                    col: row["COLONIA"] || row["Colonia"] || "Sin Nombre",
-                    sup: row["SUPERVISOR"] || row["Supervisor"] || "Pendiente",
-                    lat: 29.08 + (Math.random() * 0.14 - 0.07),
-                    lng: -110.95 + (Math.random() * 0.14 - 0.07),
-                    carga: 0,
-                    tiempoPermanencia: 0 
-                };
-            });
+                coloniasData = datos.map(row => {
+                    const rutaId = parseInt(row["RUTA"]) || 1;
+                    if(truckMetrics[rutaId]) truckMetrics[rutaId].activo = true;
 
-            const uploadBox = document.getElementById('upload-section');
-            if(uploadBox) uploadBox.style.display = "none";
-            
-            reiniciarSistema();
-            for(let i = 0; i < 15; i++) {
-                simularOperacion(true); 
+                    return {
+                        r: rutaId,
+                        sector: limpiarSector(row["SECTOR"]),
+                        col: (row["COLONIA"] || "Sin Nombre").trim(),
+                        sup: row["SUPERVISOR"] || "Pendiente",
+                        turno: row["TURNO"] || "1",
+                        horario: row["HORA SALIDA"] || "N/A",
+                        lat: 29.08 + (Math.random() * 0.14 - 0.07),
+                        lng: -110.95 + (Math.random() * 0.14 - 0.07),
+                        carga: 0,
+                        tiempoPermanencia: 0 
+                    };
+                });
+
+                const uploadBox = document.getElementById('upload-section');
+                if(uploadBox) uploadBox.style.display = "none";
+                
+                reiniciarSistema();
+                for(let i = 0; i < 15; i++) { simularOperacion(true); }
+                console.log("SITRAH: Datos de Hermosillo cargados.");
+
+            } catch (error) {
+                console.error("Error al cargar JSON:", error);
             }
         }
 
-        // Mantener el input funcional por si quieres subir otro archivo después
         document.getElementById('fileInput').addEventListener('change', function(e) {
             const reader = new FileReader();
             reader.onload = function(evt) {
                 const data = new Uint8Array(evt.target.result);
                 const workbook = XLSX.read(data, { type: 'array' });
                 const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
-                
-                // Actualizamos la variable y cargamos
-                datosAutocarga.length = 0;
-                json.forEach(item => datosAutocarga.push(item));
-                cargarDatosAutomaticos();
+                // Simulación de carga manual si se requiere
+                console.log("Carga manual detectada");
             };
             reader.readAsArrayBuffer(e.target.files[0]);
         });
@@ -270,7 +266,7 @@
                 coloniasData.forEach(c => {
                     L.circleMarker([c.lat, c.lng], {
                         radius: 6, fillColor: sectoresInfo[c.sector].color, color: "#fff", weight: 2, fillOpacity: 0.9
-                    }).addTo(map).bindPopup(`<b>${c.col}</b><br>Camión #${c.r}`);
+                    }).addTo(map).bindPopup(`<b>${c.col}</b><br>Ruta #${c.r}`);
                 });
             } else {
                 Object.keys(truckMetrics).forEach(id => {
@@ -315,8 +311,8 @@
                 tr.className = "hover:bg-slate-50 transition-colors";
                 tr.innerHTML = `
                     <td class="px-6 py-4">
-                        <div class="font-bold text-slate-700">${c.col.substring(0,50)}</div>
-                        <div class="text-[9px] text-slate-400 uppercase tracking-tighter">Sup: ${c.sup}</div>
+                        <div class="font-bold text-slate-700">${c.col}</div>
+                        <div class="text-[9px] text-slate-400 uppercase tracking-tighter">Sup: ${c.sup} | Turno: ${c.turno}</div>
                     </td>
                     <td class="px-6 py-4">
                         <span class="px-2 py-0.5 rounded text-[9px] font-black text-white" style="background:${sectoresInfo[c.sector].color}">
@@ -341,12 +337,12 @@
             grid.innerHTML = "";
             Object.keys(truckMetrics).forEach(id => {
                 const t = truckMetrics[id];
-                if (!t.activo && id > 25) return; 
+                if (!t.activo) return; 
                 const colorEnergia = t.energia > 20 ? 'bg-emerald-500' : 'bg-red-500';
                 const icono = t.tipo === 'Diesel' ? 'fa-gas-pump' : 'fa-plug-circle-bolt';
                 const colorTipo = t.tipo === 'Eléctrico' ? 'text-emerald-500' : 'text-blue-500';
                 grid.innerHTML += `
-                    <div class="bg-white p-6 rounded-3xl shadow-sm border ${t.activo ? 'border-emerald-100' : 'border-gray-100 opacity-60'}">
+                    <div class="bg-white p-6 rounded-3xl shadow-sm border border-emerald-100">
                         <div class="flex justify-between items-start mb-4">
                             <div>
                                 <span class="text-[10px] font-black ${colorTipo} uppercase">${t.tipo}</span>
@@ -371,9 +367,7 @@
                                 </div>
                                 <div class="text-right">
                                     <p class="text-[9px] font-bold text-slate-400 uppercase">Estado</p>
-                                    <span class="text-[9px] ${t.activo ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-400'} px-2 py-1 rounded-full font-black italic">
-                                        ${t.activo ? 'EN RUTA' : 'DISPONIBLE'}
-                                    </span>
+                                    <span class="text-[9px] bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full font-black italic">EN RUTA</span>
                                 </div>
                             </div>
                         </div>
@@ -399,8 +393,7 @@
             const metrica = truckMetrics[c.r];
             const d = calcularDistancia(metrica.ultimaLat, metrica.ultimaLng, c.lat, c.lng);
             metrica.distanciaTotal += d;
-            const factorGasto = metrica.tipo === 'Eléctrico' ? 1.1 : 1.5;
-            metrica.energia = Math.max(0, metrica.energia - (d * factorGasto));
+            metrica.energia = Math.max(0, metrica.energia - (d * 1.2));
             if (metrica.energia < 5) metrica.energia = 100; 
             metrica.ultimaLat = c.lat;
             metrica.ultimaLng = c.lng;
@@ -420,10 +413,10 @@
             div.className = "p-3 bg-white border border-gray-100 rounded-xl log-entry shadow-sm mb-2";
             div.innerHTML = `
                 <div class="flex justify-between items-center mb-1">
-                    <span class="font-black text-slate-800 text-[9px] uppercase">${c.col.substring(0,18)}...</span>
+                    <span class="font-black text-slate-800 text-[9px] uppercase">${c.col.substring(0,25)}...</span>
                     <span class="text-emerald-500 font-bold">+${peso.toFixed(2)}T</span>
                 </div>
-                <div class="text-[8px] text-slate-400 font-bold uppercase">Camión #${c.r} — <i class="far fa-clock"></i> ${c.tiempoPermanencia} MIN EN SITIO</div>`;
+                <div class="text-[8px] text-slate-400 font-bold uppercase">Ruta #${c.r} — <i class="far fa-clock"></i> ${c.tiempoPermanencia} MIN EN SITIO</div>`;
             log.prepend(div);
             if (log.children.length > 8) log.lastChild.remove();
         }
@@ -485,12 +478,10 @@
         }
 
         function switchTab(tab) {
-            document.getElementById('view-mapa').classList.add('hidden');
-            document.getElementById('view-stats').classList.add('hidden');
-            document.getElementById('view-flota').classList.add('hidden');
-            document.getElementById('btn-mapa').classList.remove('tab-active');
-            document.getElementById('btn-stats').classList.remove('tab-active');
-            document.getElementById('btn-flota').classList.remove('tab-active');
+            ['mapa', 'stats', 'flota'].forEach(t => {
+                document.getElementById('view-' + t).classList.add('hidden');
+                document.getElementById('btn-' + t).classList.remove('tab-active');
+            });
             document.getElementById('view-' + tab).classList.remove('hidden');
             document.getElementById('btn-' + tab).classList.add('tab-active');
             if(tab === 'stats') {
@@ -511,7 +502,6 @@
                 "Tipo": truckMetrics[c.r].tipo,
                 "Sector": c.sector,
                 "Distancia (KM)": truckMetrics[c.r].distanciaTotal.toFixed(2),
-                "Energía": truckMetrics[c.r].energia.toFixed(1) + "%",
                 "Carga (T)": c.carga.toFixed(2)
             }));
             const ws = XLSX.utils.json_to_sheet(dataExport);
@@ -523,11 +513,10 @@
         setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
         setInterval(simularOperacion, 2500);
 
-        // --- ACTUALIZACIÓN: WINDOW.ONLOAD DISPARA LA CARGA AUTOMÁTICA ---
         window.onload = function() {
             initMap();
             initTrucks();
-            cargarDatosAutomaticos(); // Se carga solo sin pedir archivo
+            cargarDatosAutomaticos();
         };
     </script>
 </body>
