@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SITRAH - Analítica Avanzada HMO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        #map { height: 100%; width: 100%; border-radius: 15px; z-index: 1; }
+        .log-entry { animation: slideIn 0.3s ease-out; border-left: 3px solid #10b981; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+        .tab-active { border-bottom: 3px solid #10b981; color: #059669; font-weight: 800; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #10b981; border-radius: 10px; }
+        .map-overlay-btn {
+            position: absolute; top: 20px; right: 20px; z-index: 1000;
+            background: white; padding: 10px; border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans overflow-hidden">
+
+    <div class="flex h-screen">
+        <aside class="w-80 bg-white border-r border-gray-200 p-5 flex flex-col shadow-2xl z-20">
+            <div class="mb-6">
+                <h1 class="text-emerald-600 font-black text-2xl italic tracking-tighter">SITRAH <span class="text-slate-400 font-light text-lg italic">HMO</span></h1>
+                <p class="text-[10px] text-slate-400 uppercase tracking-[0.2em] font-bold">Gestión de Residuos y Logística</p>
+            </div>
+
+            <div id="upload-section" class="mb-6 p-4 bg-emerald-50 rounded-2xl border border-emerald-100 transition-all duration-500">
+                <label class="block text-[10px] font-black text-emerald-700 uppercase mb-2 tracking-widest">Importar Rutas (.xlsx)</label>
+                <input type="file" id="fileInput" accept=".xlsx" 
+                    class="block w-full text-[10px] text-slate-500 file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:bg-emerald-600 file:text-white hover:file:bg-emerald-700 cursor-pointer"/>
+            </div>
+
+            <div class="flex-1 overflow-y-auto space-y-3" id="truck-monitor">
+                <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b pb-2 mb-2">Monitor de Sectores</h3>
+                <p class="text-[10px] text-slate-400 italic">Esperando datos...</p>
+            </div>
+
+            <div class="mt-4 pt-4 border-t border-gray-100">
+                <div class="p-4 bg-slate-900 rounded-2xl text-white shadow-lg">
+                    <p class="text-[10px] font-bold uppercase opacity-60 mb-1">Total Recolectado</p>
+                    <div class="flex items-baseline gap-1">
+                        <span id="total-ton-global" class="text-3xl font-black">0.00</span>
+                        <span class="text-xs font-bold uppercase">Tons</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="flex-1 flex flex-col overflow-hidden">
+            <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 z-10">
+                <nav class="flex gap-8 h-full">
+                    <button id="btn-mapa" onclick="switchTab('mapa')" class="tab-active h-full text-[11px] uppercase tracking-widest transition-all">Mapa en Vivo</button>
+                    <button id="btn-stats" onclick="switchTab('stats')" class="h-full text-[11px] font-bold text-slate-400 uppercase tracking-widest hover:text-emerald-500 transition-all">Analítica Detallada</button>
+                    <button id="btn-flota" onclick="switchTab('flota')" class="h-full text-[11px] font-bold text-slate-400 uppercase tracking-widest hover:text-emerald-500 transition-all">Estado de Flota</button>
+                </nav>
+                <span id="clock" class="text-sm font-mono font-bold text-slate-700">00:00:00</span>
+            </header>
+
+            <div id="view-mapa" class="p-4 grid grid-cols-12 gap-4 flex-1 overflow-hidden">
+                <div class="col-span-9 h-full relative">
+                    <div class="map-overlay-btn">
+                        <button onclick="toggleViewMode()" class="flex items-center gap-2 text-[10px] font-black uppercase text-emerald-700">
+                            <i class="fas fa-truck-moving"></i> <span id="view-mode-text">Modo: Camiones</span>
+                        </button>
+                    </div>
+                    <div class="h-full bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden p-1">
+                        <div id="map"></div>
+                    </div>
+                </div>
+                <div class="col-span-3 flex flex-col gap-4 h-full">
+                    <div class="flex-1 bg-white border border-gray-200 rounded-3xl flex flex-col overflow-hidden shadow-sm">
+                        <div class="p-4 bg-slate-50 border-b border-gray-100">
+                            <h3 class="text-[10px] font-black text-slate-500 uppercase italic">Actividad Reciente</h3>
+                        </div>
+                        <div id="event-log" class="text-[11px] p-4 space-y-3 overflow-y-auto flex-1 text-slate-500"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-stats" class="hidden p-8 overflow-y-auto h-full bg-white flex-1">
+                <div class="max-w-6xl mx-auto">
+                    <div class="mb-8 border-b pb-6 text-center lg:text-left">
+                        <h2 class="text-3xl font-black text-slate-900 italic uppercase">Panel de <span class="text-emerald-500">Métricas Avanzadas</span></h2>
+                        <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Rendimiento, Tiempos y Distancias</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                        <div class="lg:col-span-2 p-6 border rounded-3xl bg-slate-50/50">
+                            <h4 class="text-[10px] font-black uppercase mb-4 text-slate-400">Carga por Sector (Tons)</h4>
+                            <canvas id="chartCarga" height="150"></canvas>
+                        </div>
+                        <div class="p-6 border rounded-3xl bg-slate-50/50 flex flex-col items-center">
+                            <h4 class="text-[10px] font-black uppercase mb-4 text-slate-400">Distribución de Esfuerzo</h4>
+                            <canvas id="chartDona" height="200"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap justify-end items-center gap-3 mb-4">
+                        <div class="relative">
+                            <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[10px]"></i>
+                            <input type="text" id="dbSearch" onkeyup="filterDB()" placeholder="BUSCAR COLONIA, RUTA O SUPERVISOR..." 
+                                   class="pl-8 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-[10px] font-bold uppercase outline-none focus:ring-2 focus:ring-emerald-500 w-80 transition-all shadow-sm">
+                        </div>
+                        <button onclick="generarReporte()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-black uppercase px-5 py-2.5 rounded-xl shadow-md transition-all flex items-center gap-2">
+                            <i class="fas fa-file-export"></i> Generar Reporte Completo
+                        </button>
+                    </div>
+
+                    <div class="bg-white border border-gray-200 rounded-3xl overflow-hidden shadow-sm">
+                        <table class="w-full text-left text-xs" id="coloniaTable">
+                            <thead class="bg-slate-50 text-slate-400 font-black uppercase text-[9px] tracking-widest">
+                                <tr>
+                                    <th class="px-6 py-4">Colonia</th>
+                                    <th class="px-6 py-4">Ruta / Distancia</th>
+                                    <th class="px-6 py-4 text-center">Tiempo en Sitio</th>
+                                    <th class="px-6 py-4 text-right">Carga Acum. (T)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="colonia-table-body" class="divide-y divide-gray-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-flota" class="hidden p-8 overflow-y-auto h-full bg-slate-50 flex-1">
+                <div class="max-w-6xl mx-auto">
+                    <div class="mb-8 border-b pb-6">
+                        <h2 class="text-3xl font-black text-slate-900 italic uppercase">Telemetría de <span class="text-emerald-500">100 Unidades</span></h2>
+                        <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">25 Eléctricos | 75 Diesel</p>
+                    </div>
+                    <div id="truck-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // --- DATOS DE AUTOCARGA (Reemplaza estos ejemplos con tus datos del Excel) ---
+        const datosAutocarga = [
+            { "RUTA": 1, "SECTOR": "Centro", "COLONIA": "Colonia Centro", "SUPERVISOR": "García" },
+            { "RUTA": 2, "SECTOR": "Norte", "COLONIA": "Balderrama", "SUPERVISOR": "Martínez" },
+            { "RUTA": 3, "SECTOR": "Sur", "COLONIA": "Palo Verde", "SUPERVISOR": "López" },
+            { "RUTA": 4, "SECTOR": "Centro", "COLONIA": "San Benito", "SUPERVISOR": "García" },
+            { "RUTA": 5, "SECTOR": "Norte", "COLONIA": "Sahuaro", "SUPERVISOR": "Martínez" }
+        ];
+
+        let coloniasData = [];
+        let truckMetrics = {}; 
+        let truckMarkers = {}; 
+        let totalGlobal = 0;
+        let map, chartCarga, chartDona;
+        let viewMode = 'camiones'; 
+        const origenHMO = [29.081, -110.967];
+
+        const sectoresInfo = {
+            Centro: { color: "#10b981", carga: 0 },
+            Norte: { color: "#3b82f6", carga: 0 },
+            Sur: { color: "#8b5cf6", carga: 0 },
+            Mixto: { color: "#f59e0b", carga: 0 }
+        };
+
+        function initTrucks() {
+            truckMetrics = {};
+            for (let i = 1; i <= 100; i++) {
+                truckMetrics[i] = {
+                    distanciaTotal: 0,
+                    ultimaLat: origenHMO[0],
+                    ultimaLng: origenHMO[1],
+                    energia: 100,
+                    tipo: i <= 25 ? 'Eléctrico' : 'Diesel',
+                    activo: false 
+                };
+            }
+        }
+
+        function calcularDistancia(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        }
+
+        function limpiarSector(sector) {
+            if (!sector) return "Centro";
+            let s = sector.toString();
+            if (s.includes("Centro")) return "Centro";
+            if (s.includes("Norte")) return "Norte";
+            if (s.includes("Sur")) return "Sur";
+            return "Mixto";
+        }
+
+        function initMap() {
+            map = L.map('map', { zoomControl: false }).setView([29.08, -110.95], 12);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map);
+        }
+
+        function toggleViewMode() {
+            viewMode = viewMode === 'camiones' ? 'colonias' : 'camiones';
+            document.getElementById('view-mode-text').innerText = `Modo: ${viewMode.charAt(0).toUpperCase() + viewMode.slice(1)}`;
+            reiniciarSistema();
+        }
+
+        // --- NUEVA FUNCIÓN PARA PROCESAR LOS DATOS AUTOMÁTICAMENTE ---
+        function cargarDatosAutomaticos() {
+            initTrucks(); 
+            coloniasData = datosAutocarga.map(row => {
+                const rawId = parseInt(row["RUTA"] || row["Ruta"]) || 1;
+                const rutaId = ((rawId - 1) % 100) + 1;
+                truckMetrics[rutaId].activo = true;
+
+                return {
+                    r: rutaId,
+                    sector: limpiarSector(row["SECTOR"] || row["Sector"]),
+                    col: row["COLONIA"] || row["Colonia"] || "Sin Nombre",
+                    sup: row["SUPERVISOR"] || row["Supervisor"] || "Pendiente",
+                    lat: 29.08 + (Math.random() * 0.14 - 0.07),
+                    lng: -110.95 + (Math.random() * 0.14 - 0.07),
+                    carga: 0,
+                    tiempoPermanencia: 0 
+                };
+            });
+
+            const uploadBox = document.getElementById('upload-section');
+            if(uploadBox) uploadBox.style.display = "none";
+            
+            reiniciarSistema();
+            for(let i = 0; i < 15; i++) {
+                simularOperacion(true); 
+            }
+        }
+
+        // Mantener el input funcional por si quieres subir otro archivo después
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const data = new Uint8Array(evt.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+                
+                // Actualizamos la variable y cargamos
+                datosAutocarga.length = 0;
+                json.forEach(item => datosAutocarga.push(item));
+                cargarDatosAutomaticos();
+            };
+            reader.readAsArrayBuffer(e.target.files[0]);
+        });
+
+        function reiniciarSistema() {
+            Object.keys(sectoresInfo).forEach(s => sectoresInfo[s].carga = 0);
+            map.eachLayer(layer => { 
+                if (layer instanceof L.CircleMarker || layer instanceof L.Marker) map.removeLayer(layer); 
+            });
+            truckMarkers = {};
+
+            if (viewMode === 'colonias') {
+                coloniasData.forEach(c => {
+                    L.circleMarker([c.lat, c.lng], {
+                        radius: 6, fillColor: sectoresInfo[c.sector].color, color: "#fff", weight: 2, fillOpacity: 0.9
+                    }).addTo(map).bindPopup(`<b>${c.col}</b><br>Camión #${c.r}`);
+                });
+            } else {
+                Object.keys(truckMetrics).forEach(id => {
+                    if (truckMetrics[id].activo) {
+                        const m = L.circleMarker([truckMetrics[id].ultimaLat, truckMetrics[id].ultimaLng], {
+                            radius: 8, fillColor: "#1e293b", color: "#10b981", weight: 3, fillOpacity: 1
+                        }).addTo(map).bindPopup(`<b>Unidad #${id}</b><br>Estado: En ruta`);
+                        truckMarkers[id] = m;
+                    }
+                });
+            }
+            actualizarUI();
+        }
+
+        function moverMarcador(id, destinoLat, destinoLng) {
+            const marker = truckMarkers[id];
+            if (!marker) return;
+            const inicio = marker.getLatLng();
+            let progreso = 0;
+            const pasos = 20;
+            const intervalo = 1500 / pasos;
+
+            const animar = setInterval(() => {
+                progreso += 1 / pasos;
+                const lat = inicio.lat + (destinoLat - inicio.lat) * progreso;
+                const lng = inicio.lng + (destinoLng - inicio.lng) * progreso;
+                marker.setLatLng([lat, lng]);
+                if (progreso >= 1) {
+                    clearInterval(animar);
+                    marker.setLatLng([destinoLat, destinoLng]);
+                }
+            }, intervalo);
+        }
+
+        function renderTable() {
+            const tb = document.getElementById('colonia-table-body');
+            if (!tb) return;
+            tb.innerHTML = "";
+            coloniasData.forEach(c => {
+                const distRuta = truckMetrics[c.r]?.distanciaTotal || 0;
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition-colors";
+                tr.innerHTML = `
+                    <td class="px-6 py-4">
+                        <div class="font-bold text-slate-700">${c.col.substring(0,50)}</div>
+                        <div class="text-[9px] text-slate-400 uppercase tracking-tighter">Sup: ${c.sup}</div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-2 py-0.5 rounded text-[9px] font-black text-white" style="background:${sectoresInfo[c.sector].color}">
+                            #${c.r} / ${c.sector.toUpperCase()}
+                        </span>
+                        <div class="text-[10px] mt-1 text-slate-500 font-bold italic">${distRuta.toFixed(2)} KM</div>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        <span class="bg-slate-100 px-3 py-1 rounded-full font-mono font-bold text-slate-600">
+                            <i class="far fa-clock text-emerald-500 mr-1"></i>${c.tiempoPermanencia} min
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-right font-black text-slate-700 text-sm">${c.carga.toFixed(2)}</td>
+                `;
+                tb.appendChild(tr);
+            });
+        }
+
+        function renderFlota() {
+            const grid = document.getElementById('truck-grid');
+            if (!grid) return;
+            grid.innerHTML = "";
+            Object.keys(truckMetrics).forEach(id => {
+                const t = truckMetrics[id];
+                if (!t.activo && id > 25) return; 
+                const colorEnergia = t.energia > 20 ? 'bg-emerald-500' : 'bg-red-500';
+                const icono = t.tipo === 'Diesel' ? 'fa-gas-pump' : 'fa-plug-circle-bolt';
+                const colorTipo = t.tipo === 'Eléctrico' ? 'text-emerald-500' : 'text-blue-500';
+                grid.innerHTML += `
+                    <div class="bg-white p-6 rounded-3xl shadow-sm border ${t.activo ? 'border-emerald-100' : 'border-gray-100 opacity-60'}">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <span class="text-[10px] font-black ${colorTipo} uppercase">${t.tipo}</span>
+                                <h4 class="text-xl font-black text-slate-800">Unidad #${id}</h4>
+                            </div>
+                            <i class="fas ${icono} text-slate-300 text-2xl"></i>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between text-[10px] font-bold mb-1 uppercase">
+                                    <span>Nivel de Energía</span>
+                                    <span class="${t.energia < 20 ? 'text-red-500' : 'text-emerald-600'}">${t.energia.toFixed(1)}%</span>
+                                </div>
+                                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                    <div class="h-full ${colorEnergia} transition-all duration-1000" style="width: ${t.energia}%"></div>
+                                </div>
+                            </div>
+                            <div class="pt-4 border-t border-gray-50 flex justify-between items-center">
+                                <div>
+                                    <p class="text-[9px] font-bold text-slate-400 uppercase">Recorrido</p>
+                                    <p class="text-lg font-mono font-bold text-slate-700">${t.distanciaTotal.toFixed(2)} <span class="text-xs">KM</span></p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-[9px] font-bold text-slate-400 uppercase">Estado</p>
+                                    <span class="text-[9px] ${t.activo ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-400'} px-2 py-1 rounded-full font-black italic">
+                                        ${t.activo ? 'EN RUTA' : 'DISPONIBLE'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function filterDB() {
+            const input = document.getElementById('dbSearch').value.toLowerCase();
+            const rows = document.querySelectorAll('#colonia-table-body tr');
+            rows.forEach(row => { row.style.display = row.innerText.toLowerCase().includes(input) ? '' : 'none'; });
+        }
+
+        function simularOperacion(silencioso = false) {
+            if (coloniasData.length === 0) return;
+            const c = coloniasData[Math.floor(Math.random() * coloniasData.length)];
+            const incCarga = Math.random() * 0.5;
+            const incTiempo = Math.floor(Math.random() * 15) + 5; 
+            c.carga += incCarga;
+            totalGlobal += incCarga;
+            sectoresInfo[c.sector].carga += incCarga;
+            c.tiempoPermanencia += incTiempo;
+            const metrica = truckMetrics[c.r];
+            const d = calcularDistancia(metrica.ultimaLat, metrica.ultimaLng, c.lat, c.lng);
+            metrica.distanciaTotal += d;
+            const factorGasto = metrica.tipo === 'Eléctrico' ? 1.1 : 1.5;
+            metrica.energia = Math.max(0, metrica.energia - (d * factorGasto));
+            if (metrica.energia < 5) metrica.energia = 100; 
+            metrica.ultimaLat = c.lat;
+            metrica.ultimaLng = c.lng;
+            if (viewMode === 'camiones' && !silencioso) {
+                moverMarcador(c.r, c.lat, c.lng);
+            } else if (silencioso && truckMarkers[c.r]) {
+                truckMarkers[c.r].setLatLng([c.lat, c.lng]);
+            }
+            if(!silencioso) registrarEvento(c, incCarga);
+            actualizarUI();
+        }
+
+        function registrarEvento(c, peso) {
+            const log = document.getElementById("event-log");
+            if(!log) return;
+            const div = document.createElement("div");
+            div.className = "p-3 bg-white border border-gray-100 rounded-xl log-entry shadow-sm mb-2";
+            div.innerHTML = `
+                <div class="flex justify-between items-center mb-1">
+                    <span class="font-black text-slate-800 text-[9px] uppercase">${c.col.substring(0,18)}...</span>
+                    <span class="text-emerald-500 font-bold">+${peso.toFixed(2)}T</span>
+                </div>
+                <div class="text-[8px] text-slate-400 font-bold uppercase">Camión #${c.r} — <i class="far fa-clock"></i> ${c.tiempoPermanencia} MIN EN SITIO</div>`;
+            log.prepend(div);
+            if (log.children.length > 8) log.lastChild.remove();
+        }
+
+        function actualizarUI() {
+            const globalElem = document.getElementById('total-ton-global');
+            if(globalElem) globalElem.innerText = totalGlobal.toFixed(2);
+            const monitor = document.getElementById('truck-monitor');
+            if(!monitor) return;
+            monitor.innerHTML = '<h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b pb-2 mb-2">Monitor de Sectores</h3>';
+            Object.keys(sectoresInfo).forEach(key => {
+                const s = sectoresInfo[key];
+                monitor.innerHTML += `
+                    <div class="p-3 bg-slate-50 rounded-xl mb-2">
+                        <div class="flex justify-between text-[10px] font-black mb-1">
+                            <span class="text-slate-600">${key.toUpperCase()}</span>
+                            <span>${s.carga.toFixed(1)} T</span>
+                        </div>
+                        <div class="w-full bg-gray-200 h-1 rounded-full overflow-hidden">
+                            <div class="h-full transition-all duration-500" style="width:${Math.min(s.carga*5, 100)}%; background:${s.color}"></div>
+                        </div>
+                    </div>`;
+            });
+            if (!document.getElementById('view-stats').classList.contains('hidden')) renderTable();
+            if (!document.getElementById('view-flota').classList.contains('hidden')) renderFlota();
+        }
+
+        function renderCharts() {
+            const ctx1 = document.getElementById('chartCarga').getContext('2d');
+            if (chartCarga) chartCarga.destroy();
+            chartCarga = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(sectoresInfo),
+                    datasets: [{ 
+                        label: 'Tonelaje',
+                        data: Object.values(sectoresInfo).map(s => s.carga), 
+                        backgroundColor: Object.values(sectoresInfo).map(s => s.color), 
+                        borderRadius: 8 
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { display: false } } }
+            });
+
+            const ctx2 = document.getElementById('chartDona').getContext('2d');
+            if (chartDona) chartDona.destroy();
+            chartDona = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(sectoresInfo),
+                    datasets: [{ 
+                        data: Object.values(sectoresInfo).map(s => s.carga), 
+                        backgroundColor: Object.values(sectoresInfo).map(s => s.color), 
+                        borderWidth: 0 
+                    }]
+                },
+                options: { cutout: '80%', plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } } } }
+            });
+        }
+
+        function switchTab(tab) {
+            document.getElementById('view-mapa').classList.add('hidden');
+            document.getElementById('view-stats').classList.add('hidden');
+            document.getElementById('view-flota').classList.add('hidden');
+            document.getElementById('btn-mapa').classList.remove('tab-active');
+            document.getElementById('btn-stats').classList.remove('tab-active');
+            document.getElementById('btn-flota').classList.remove('tab-active');
+            document.getElementById('view-' + tab).classList.remove('hidden');
+            document.getElementById('btn-' + tab).classList.add('tab-active');
+            if(tab === 'stats') {
+                renderTable();
+                setTimeout(renderCharts, 100);
+            } else if (tab === 'flota') {
+                renderFlota();
+            } else if (tab === 'mapa') {
+                setTimeout(() => { map.invalidateSize(); }, 200);
+            }
+        }
+
+        function generarReporte() {
+            if (coloniasData.length === 0) { alert("No hay datos cargados."); return; }
+            const dataExport = coloniasData.map(c => ({
+                "Colonia": c.col,
+                "Camión": c.r,
+                "Tipo": truckMetrics[c.r].tipo,
+                "Sector": c.sector,
+                "Distancia (KM)": truckMetrics[c.r].distanciaTotal.toFixed(2),
+                "Energía": truckMetrics[c.r].energia.toFixed(1) + "%",
+                "Carga (T)": c.carga.toFixed(2)
+            }));
+            const ws = XLSX.utils.json_to_sheet(dataExport);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Métricas");
+            XLSX.writeFile(wb, `Reporte_SITRAH_${new Date().getTime()}.xlsx`);
+        }
+
+        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+        setInterval(simularOperacion, 2500);
+
+        // --- ACTUALIZACIÓN: WINDOW.ONLOAD DISPARA LA CARGA AUTOMÁTICA ---
+        window.onload = function() {
+            initMap();
+            initTrucks();
+            cargarDatosAutomaticos(); // Se carga solo sin pedir archivo
+        };
+    </script>
+</body>
+</html>
