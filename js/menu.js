@@ -1,4 +1,3 @@
-
 var enlaceActivo = null; // botón que está cargado actualmente en el iframe
 
 // ----------------------------------------------------------------
@@ -27,13 +26,13 @@ function restaurarActivo() {
     var iframe = document.getElementById("preview");
     var placeholder = document.getElementById("placeholder");
 
-    // 1. Limpiar el src del iframe (lo deja vacío)
+    // Limpiar el src del iframe (lo deja vacío)
     iframe.src = "about:blank";
 
-    // 2. Mostrar el placeholder quitando la clase que lo oculta
+    // Mostrar el placeholder quitando la clase que la oculta
     placeholder.classList.remove("oculto");
 
-    // 3. Quitar el estilo resaltado del botón
+    // Quitar el estilo resaltado del botón
     quitarActivo();
     enlaceActivo = null;
 }
