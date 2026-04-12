@@ -1,6 +1,3 @@
-// ============================================================
-// menu.js - Lógica del menú con previsualización en iframe
-// ============================================================
 
 var enlaceActivo = null; // botón que está cargado actualmente en el iframe
 
@@ -24,11 +21,21 @@ function previsualizarEn(ruta, enlace) {
 }
 
 // ----------------------------------------------------------------
-// RESTAURAR ACTIVO: al quitar el cursor, mantiene el último cargado
+// RESTAURAR ACTIVO: al quitar el cursor, vuelve al estado inicial
 // ----------------------------------------------------------------
 function restaurarActivo() {
-    // No hace nada — el iframe conserva el último programa cargado
-    // El botón activo se mantiene para indicar qué está en pantalla
+    var iframe = document.getElementById("preview");
+    var placeholder = document.getElementById("placeholder");
+
+    // 1. Limpiar el src del iframe (lo deja vacío)
+    iframe.src = "about:blank";
+
+    // 2. Mostrar el placeholder quitando la clase que lo oculta
+    placeholder.classList.remove("oculto");
+
+    // 3. Quitar el estilo resaltado del botón
+    quitarActivo();
+    enlaceActivo = null;
 }
 
 // ----------------------------------------------------------------

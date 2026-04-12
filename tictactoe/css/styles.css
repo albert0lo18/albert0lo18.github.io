@@ -1,294 +1,280 @@
-/* Variables de color personalizables desde los pickers del HTML */
+/* Variables de color personalizables vinculadas a los controles del documento */
 :root {
-    --cell-color-odd: rgba(255, 255, 255, 0.03); /* Color base para celdas impares */
-    --cell-color-even: rgba(13, 240, 145, 0.06); /* Color base para celdas pares */
-    --winner-color: #ffaa00; /* Color base para la linea ganadora */
-    --line-color: #bff0db;    /* Color base para las lineas de la cuadricula */
+    --cell-color-odd: rgba(255, 255, 255, 0.03); /* Tono base para celdas en posiciones impares */
+    --cell-color-even: rgba(13, 240, 145, 0.06); /* Tono base para celdas en posiciones pares */
+    --winner-color: #ffaa00; /* Color dinámico para la línea de victoria y mensajes */
+    --line-color: #bff0db;    /* Color asignado a la cuadrícula del tablero */
 }
 
-/* Centrado de pantalla — igual que el original */
+/* Configuración del área de visualización principal */
 body {
-    display: flex; /* Usamos flexbox para centrar todo */
-    flex-direction: column; /* Los elementos se apilan en columna */
-    align-items: center; /* Centra horizontalmente */
-    justify-content: flex-start; /* Empieza desde arriba */
-    min-height: 100vh; /* Ocupa toda la altura de la ventana */
-    background-color: #000000; /* Fondo negro, igual que el original */
-    margin: 0; /* Sin margen externo */
-    padding: 10px 20px 20px; /* Espacio reducido para compactar */
-    box-sizing: border-box; /* El padding no agrega ancho extra */
-    font-family: Arial, sans-serif; /* Fuente simple sin serifas */
-    overflow-x: hidden; /* Oculta desbordamiento horizontal */
+    display: flex; /* Alineación de elementos mediante flexbox */
+    flex-direction: column; /* Disposición de componentes en eje vertical */
+    align-items: center; /* Centrado horizontal de la interfaz */
+    justify-content: flex-start; /* Inicio de contenido en la parte superior */
+    min-height: 100vh; /* Cobertura total de la altura del viewport */
+    background-color: #000000; /* Fondo oscuro para resaltar elementos neón */
+    margin: 0; 
+    padding: 10px 20px 20px; /* Espaciado interno para optimizar el layout */
+    box-sizing: border-box; /* El padding no altera las dimensiones totales */
+    font-family: Arial, sans-serif; 
+    overflow-x: hidden; /* Restricción de desplazamiento horizontal */
 }
 
-/* Titulo principal */
+/* Estilo del encabezado principal del juego */
 h1 {
-    color: #bff0db; /* Color verde claro */
-    font-size: 18px; /* Reducido para compactar */
-    margin: 6px 0 8px; /* Margen reducido arriba y abajo */
-    letter-spacing: 2px; /* Espaciado entre letras */
-    text-shadow: 0 0 10px #0df091; /* Brillo verde */
+    color: #bff0db; 
+    font-size: 18px; 
+    margin: 6px 0 8px; 
+    letter-spacing: 2px; /* Espaciado entre caracteres para mejorar legibilidad */
+    text-shadow: 0 0 10px #0df091; /* Efecto de iluminación temática */
 }
 
-/* Boton de regreso al menu */
+/* Control de navegación para retornar al menú de selección */
 .back-btn {
-    position: fixed; /* Fijo en pantalla, no se mueve al hacer scroll */
-    top: 14px; /* Distancia desde arriba */
-    left: 14px; /* Distancia desde la izquierda */
-    padding: 7px 13px; /* Espacio interno del boton */
-    background-color: #111; /* Fondo casi negro */
-    border: 1px solid #bff0db; /* Borde verde claro igual que las lineas */
-    color: #bff0db; /* Texto verde claro */
-    text-decoration: none; /* Sin subrayado en el enlace */
-    font-size: 12px; /* Tamanio de texto pequenio */
-    z-index: 999; /* Siempre por encima de otros elementos */
-    letter-spacing: 1px; /* Espaciado entre letras */
+    position: fixed; /* Posicionamiento estático respecto a la pantalla */
+    top: 14px; 
+    left: 14px; 
+    padding: 7px 13px; 
+    background-color: #111; 
+    border: 1px solid #bff0db; 
+    color: #bff0db; 
+    text-decoration: none; 
+    font-size: 12px; 
+    z-index: 999; /* Asegura visibilidad sobre el tablero y overlays */
+    letter-spacing: 1px; 
 }
 
-/* Efecto al pasar el mouse sobre el boton de regreso */
+/* Feedback visual al interactuar con el botón de regreso */
 .back-btn:hover {
-    background-color: #bff0db; /* Fondo verde al pasar el mouse */
-    color: #000; /* Texto negro al pasar el mouse */
+    background-color: #bff0db; 
+    color: #000; 
 }
 
-/* Fila de controles de color personalizados */
+/* Panel de agrupación para los selectores de color */
 .color-controls {
-    display: flex; /* Muestra los pickers en fila */
-    gap: 10px; /* Espacio reducido entre pickers */
-    margin-bottom: 6px; /* Espacio inferior reducido */
-    align-items: center; /* Alinea verticalmente */
+    display: flex; 
+    gap: 10px; 
+    margin-bottom: 6px; 
+    align-items: center; 
 }
 
-/* Cada par de etiqueta + picker */
+/* Contenedor individual para etiquetas e inputs de color */
 .color-item {
-    display: flex; /* Etiqueta y picker en fila */
-    flex-direction: column; /* Apila etiqueta arriba y picker abajo */
-    align-items: center; /* Centra horizontalmente */
-    gap: 4px; /* Espacio entre etiqueta y picker */
-    font-size: 11px; /* Texto pequenio para no ocupar espacio */
-    color: #888; /* Color gris suave para las etiquetas */
-    letter-spacing: 1px; /* Espaciado entre letras */
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 4px; 
+    font-size: 11px; 
+    color: #888; 
+    letter-spacing: 1px; 
 }
 
-/* Input de color (el cuadrito de color clickeable) */
+/* Estilo de los campos de entrada de color */
 .color-item input[type="color"] {
-    width: 28px; /* Ancho reducido del picker */
-    height: 22px; /* Alto reducido del picker */
-    border: 1px solid #bff0db; /* Borde verde claro */
-    background: none; /* Sin fondo extra */
-    cursor: pointer; /* Cursor de mano */
-    padding: 1px; /* Espacio interno mínimo */
+    width: 28px; 
+    height: 22px; 
+    border: 1px solid #bff0db; 
+    background: none; 
+    cursor: pointer; 
+    padding: 1px; 
 }
 
-/* Contenedor del selector de par de imagenes */
+/* Sección de configuración para el tema de las piezas */
 .pair-selector {
-    margin-bottom: 6px; /* Espacio inferior reducido */
-    font-size: 13px; /* Tamanio de texto */
-    color: #bff0db; /* Color verde claro */
-    letter-spacing: 1px; /* Espaciado entre letras */
+    margin-bottom: 6px; 
+    font-size: 13px; 
+    color: #bff0db; 
+    letter-spacing: 1px; 
 }
 
-/* Menu desplegable de seleccion de piezas */
+/* Estilo para el menú desplegable de selección de imágenes */
 .pair-selector select {
-    margin-left: 6px; /* Espacio entre etiqueta y select */
-    padding: 4px 8px; /* Espacio interno */
-    background-color: #111; /* Fondo oscuro */
-    border: 1px solid #bff0db; /* Borde verde claro */
-    color: #bff0db; /* Texto verde claro */
-    font-size: 13px; /* Tamanio de texto */
-    cursor: pointer; /* Cursor de mano al pasar */
+    margin-left: 6px; 
+    padding: 4px 8px; 
+    background-color: #111; 
+    border: 1px solid #bff0db; 
+    color: #bff0db; 
+    font-size: 13px; 
+    cursor: pointer; 
 }
 
-/* Caja del temporizador */
+/* Estilo del contenedor del cronómetro */
 .timer-box {
-    font-size: 16px; /* Reducido para compactar */
-    font-weight: bold; /* Negrita para destacar */
-    color: #bff0db; /* Color verde claro */
-    margin-bottom: 4px; /* Espacio inferior reducido */
-    letter-spacing: 2px; /* Espaciado entre letras */
-    text-shadow: 0 0 8px #0df091; /* Brillo verde */
+    font-size: 16px; 
+    font-weight: bold; 
+    color: #bff0db; 
+    margin-bottom: 4px; 
+    letter-spacing: 2px; 
+    text-shadow: 0 0 8px #0df091; 
 }
 
-/* Color rojo cuando quedan menos de 30 segundos */
+/* Estado de alerta visual para el tiempo límite */
 .timer-box.urgent {
-    color: #ff4444; /* Rojo para indicar urgencia */
-    text-shadow: 0 0 8px #ff0000; /* Brillo rojo de advertencia */
+    color: #ff4444; 
+    text-shadow: 0 0 8px #ff0000; 
 }
 
-/* Color gris cuando el tiempo se agoto */
+/* Estado de bloqueo visual al agotarse el tiempo */
 .timer-box.locked {
-    color: #555; /* Gris oscuro para indicar inactivo */
-    text-shadow: none; /* Sin brillo cuando esta bloqueado */
+    color: #555; 
+    text-shadow: none; 
 }
 
-/* Indicador del turno actual */
+/* Visualización informativa del turno activo */
 .turn-display {
-    font-size: 12px; /* Reducido para compactar */
-    color: #888; /* Gris medio */
-    margin-bottom: 8px; /* Espacio inferior reducido */
-    letter-spacing: 1px; /* Espaciado entre letras */
+    font-size: 12px; 
+    color: #888; 
+    margin-bottom: 8px; 
+    letter-spacing: 1px; 
 }
 
-/* Contenedor principal del tablero */
+/* Área de encuadre para el tablero de juego */
 .board {
-    width: 270px; /* Reducido para compactar */
-    height: 270px; /* Reducido para compactar */
-    display: flex; /* Flexbox para centrar la tabla */
-    justify-content: center; /* Centra horizontalmente */
-    align-items: center; /* Centra verticalmente */
-    background-color: #000; /* Fondo negro */
+    width: 270px; 
+    height: 270px; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    background-color: #000; 
 }
 
-/* Tabla del tablero */
+/* Estructura base para la cuadrícula de juego */
 table {
-    position: relative; /* Para posicionar lineas de victoria */
-    border-collapse: collapse; /* Colapsa bordes */
+    position: relative; 
+    border-collapse: collapse; /* Fusión de bordes para una cuadrícula limpia */
 }
 
-/* Celdas del tablero */
+/* Dimensionamiento de las celdas de juego */
 td {
-    width: 70px; /* Reducido para compactar */
-    height: 70px; /* Reducido para compactar */
-    position: relative; /* Para pseudoelementos de lineas */
-    border: none; /* Sin borde propio */
+    width: 70px; 
+    height: 70px; 
+    position: relative; /* Referencia para las líneas de la cuadrícula */
+    border: none; 
 }
 
-/* Color claro para celdas en posicion impar (alternado) */
-/* Patron de tablero de ajedrez: filas impares (1,3) empiezan con color A */
+/* Aplicación de patrón cromático alternado (Ajedrezado) */
 tr:nth-child(odd) td:nth-child(odd) {
-    background-color: var(--cell-color-odd); /* Fila impar, columna impar → color A */
+    background-color: var(--cell-color-odd); 
 }
 tr:nth-child(odd) td:nth-child(even) {
-    background-color: var(--cell-color-even); /* Fila impar, columna par → color B */
+    background-color: var(--cell-color-even); 
 }
-
-/* Filas pares (2) invierten el patron para lograr ABA / BAB / ABA */
 tr:nth-child(even) td:nth-child(odd) {
-    background-color: var(--cell-color-even); /* Fila par, columna impar → color B */
+    background-color: var(--cell-color-even); 
 }
 tr:nth-child(even) td:nth-child(even) {
-    background-color: var(--cell-color-odd); /* Fila par, columna par → color A */
+    background-color: var(--cell-color-odd); 
 }
 
-/* --- LINEAS VERTICALES --- igual que el original */
-/* Se crean en la primera y segunda columna para separar 1-2 y 2-3 */
+/* Construcción de las líneas verticales de la cuadrícula mediante pseudoelementos */
 td:nth-child(1)::before,
 td:nth-child(2)::before {
-    content: ""; /* Necesario para que aparezca el pseudoelemento */
-    position: absolute; /* Posicion absoluta dentro de la celda */
-    top: 5px; /* Espacio para que no toque el borde superior */
-    bottom: 5px; /* Espacio para que no toque el borde inferior */
-    right: -2px; /* Ajuste para centrar la linea entre celdas */
-    width: 5px; /* Grosor de la linea vertical */
-    background: var(--line-color); /* Color cuadricula vertical — controlado por el picker */
-    box-shadow: 0 0 15px var(--line-color); /* Brillo vertical del mismo color */
-    border-radius: 10px; /* Bordes redondeados igual que el original */
-    z-index: 1; /* Por encima del fondo pero debajo de las piezas */
+    content: ""; 
+    position: absolute; 
+    top: 5px; 
+    bottom: 5px; 
+    right: -2px; 
+    width: 5px; 
+    background: var(--line-color); 
+    box-shadow: 0 0 15px var(--line-color); 
+    border-radius: 10px; 
+    z-index: 1; /* Prioridad bajo las piezas de juego */
 }
 
-/* --- LINEAS HORIZONTALES --- igual que el original */
-/* Se crean en la primera y segunda fila para separar 1-2 y 2-3 */
+/* Construcción de las líneas horizontales de la cuadrícula mediante pseudoelementos */
 tr:nth-child(1) td::after,
 tr:nth-child(2) td::after {
-    content: ""; /* Necesario para que aparezca el pseudoelemento */
-    position: absolute; /* Posicion absoluta dentro de la celda */
-    bottom: -2px; /* Ajuste para centrar entre filas */
-    left: 5px; /* Espacio desde el borde izquierdo */
-    right: 5px; /* Espacio hasta el borde derecho */
-    height: 5px; /* Grosor de la linea horizontal */
-    background: var(--line-color); /* Color cuadricula horizontal — controlado por el picker */
-    box-shadow: 0 0 15px var(--line-color); /* Brillo horizontal del mismo color */
-    border-radius: 10px; /* Bordes redondeados igual que el original */
-    z-index: 1; /* Por encima del fondo pero debajo de las piezas */
+    content: ""; 
+    position: absolute; 
+    bottom: -2px; 
+    left: 5px; 
+    right: 5px; 
+    height: 5px; 
+    background: var(--line-color); 
+    box-shadow: 0 0 15px var(--line-color); 
+    border-radius: 10px; 
+    z-index: 1; 
 }
 
-/* Botones dentro de las celdas */
+/* Interactividad de los botones de entrada del tablero */
 .board input[type="button"] {
-    width: 70px; /* Igual al nuevo ancho de celda */
-    height: 70px; /* Igual al nuevo alto de celda */
-    background-color: rgba(255, 255, 255, 0); /* Fondo transparente */
-    border: none; /* Sin borde propio */
-    cursor: pointer; /* Cursor de mano */
-    color: transparent; /* Texto invisible */
-    background-repeat: no-repeat; /* La imagen no se repite */
-    background-position: center; /* Imagen centrada */
-    background-size: 80%; /* Imagen ocupa el 80% del boton */
+    width: 70px; 
+    height: 70px; 
+    background-color: rgba(255, 255, 255, 0); 
+    border: none; 
+    cursor: pointer; 
+    color: transparent; /* Oculta el texto para mostrar solo la imagen */
+    background-repeat: no-repeat; 
+    background-position: center; 
+    background-size: 80%; 
 }
 
-/* Imagen de X — igual que el original */
-.X { background-image: url('../img/X.png'); } /* Imagen X original del juego */
+/* Asignación de imágenes para el tema clásico */
+.X { background-image: url('../img/X.png'); } 
+.O { background-image: url('../img/O.png'); } 
 
-/* Imagen de O — igual que el original */
-.O { background-image: url('../img/O.png'); } /* Imagen O original del juego */
+/* Temática de animales: Sustitución de piezas */
+.pair-animals .O { background-image: url('../img/cat.png'); } 
+.pair-animals .X { background-image: url('../img/dog.png'); } 
 
-/* Par animales: gato para jugador O */
-.pair-animals .O { background-image: url('../img/cat.png'); } /* Gato reemplaza a O */
+/* Temática de frutas: Sustitución de piezas */
+.pair-fruits .O { background-image: url('../img/apple.png'); } 
+.pair-fruits .X { background-image: url('../img/orange.png'); } 
 
-/* Par animales: perro para jugador X */
-.pair-animals .X { background-image: url('../img/dog.png'); } /* Perro reemplaza a X */
+/* Temática espacial: Sustitución de piezas */
+.pair-space .O { background-image: url('../img/planet.png'); } 
+.pair-space .X { background-image: url('../img/rocket.png'); } 
 
-/* Par frutas: manzana para jugador O */
-.pair-fruits .O { background-image: url('../img/apple.png'); } /* Manzana reemplaza a O */
-
-/* Par frutas: naranja para jugador X */
-.pair-fruits .X { background-image: url('../img/orange.png'); } /* Naranja reemplaza a X */
-
-/* Par espacio: planeta para jugador O */
-.pair-space .O { background-image: url('../img/planet.png'); } /* Planeta reemplaza a O */
-
-/* Par espacio: cohete para jugador X */
-.pair-space .X { background-image: url('../img/rocket.png'); } /* Cohete reemplaza a X */
-
-/* Boton bloqueado cuando el tiempo termina sin ganador */
+/* Estado de bloqueo para celdas inactivas o finalizadas */
 .board input[type="button"]:disabled {
-    cursor: default; /* Cursor normal cuando no se puede hacer click */
-    opacity: 0.6; /* Apariencia semitransparente para indicar bloqueo */
+    cursor: default; 
+    opacity: 0.6; /* Feedback de inactividad */
 }
 
-/* --- LINEA GANADORA --- div real inyectado por JS, sin conflicto con pseudoelementos */
-/* El tablero necesita posicion relativa para que el div se posicione dentro de el */
+/* Contenedor relativo para el trazado de la línea ganadora */
 #gameTable {
-    position: relative; /* Permite que el div de la linea se posicione dentro del tablero */
+    position: relative; 
 }
 
-/* El div de la linea ganadora se posiciona encima del tablero */
+/* Estilo dinámico para la superposición de victoria (inyectado por JS) */
 #win-overlay {
-    position: absolute; /* Se posiciona relativo al gameTable */
-    pointer-events: none; /* No bloquea clicks aunque ya no importa al ganar */
-    z-index: 10; /* Por encima de celdas y piezas */
-    background: var(--winner-color); /* Color controlado por el picker */
-    box-shadow: 0 0 18px var(--winner-color); /* Brillo del mismo color */
-    border-radius: 5px; /* Bordes redondeados */
-    transform-origin: center; /* Punto de rotacion centrado para diagonales */
+    position: absolute; 
+    pointer-events: none; /* Evita interferencia con el puntero */
+    z-index: 10; 
+    background: var(--winner-color); 
+    box-shadow: 0 0 18px var(--winner-color); 
+    border-radius: 5px; 
+    transform-origin: center; 
 }
 
-/* Mensaje de resultado */
+/* Área de notificación de resultados de la partida */
 #message {
-    margin-top: 10px; /* Espacio reducido encima del mensaje */
-    font-size: 15px; /* Tamanio de texto */
-    font-weight: bold; /* Negrita */
-    color: var(--winner-color); /* Color del mensaje */
-    min-height: 22px; /* Altura minima para no mover el layout */
-    text-align: center; /* Texto centrado */
-    letter-spacing: 1px; /* Espaciado entre letras */
-    text-shadow: 0 0 10px var(--winner-color); /* Brillo del mensaje */
+    margin-top: 10px; 
+    font-size: 15px; 
+    font-weight: bold; 
+    color: var(--winner-color); 
+    min-height: 22px; 
+    text-align: center; 
+    letter-spacing: 1px; 
+    text-shadow: 0 0 10px var(--winner-color); 
 }
 
-/* Boton de reinicio del juego */
+/* Estilo del botón de reinicio de estado */
 .reset-btn {
-    margin-top: 10px; /* Espacio reducido encima del boton */
-    padding: 7px 20px; /* Espacio interno reducido */
-    background-color: transparent; /* Fondo transparente */
-    border: 1px solid #bff0db; /* Borde verde claro */
-    color: #bff0db; /* Texto verde claro */
-    font-size: 12px; /* Tamanio de texto reducido */
-    cursor: pointer; /* Cursor de mano */
-    letter-spacing: 2px; /* Espaciado entre letras */
-    text-transform: uppercase; /* Texto en mayusculas */
+    margin-top: 10px; 
+    padding: 7px 20px; 
+    background-color: transparent; 
+    border: 1px solid #bff0db; 
+    color: #bff0db; 
+    font-size: 12px; 
+    cursor: pointer; 
+    letter-spacing: 2px; 
+    text-transform: uppercase; 
 }
 
-/* Efecto hover del boton reiniciar */
+/* Efecto visual al interactuar con el botón de reinicio */
 .reset-btn:hover {
-    background-color: #bff0db; /* Fondo verde al pasar el mouse */
-    color: #000; /* Texto negro al pasar el mouse */
+    background-color: #bff0db; 
+    color: #000; 
 }
