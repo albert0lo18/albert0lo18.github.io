@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe: Sopa</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <a class="back-btn" href="../index.html">&larr; Menu</a>
+
+    <h1>Tic Tac Toe: Sopa</h1>
+
+    <!-- Selector de par de imagenes -->
+    <div class="pair-selector">
+        <label>Piezas:</label>
+        <select id="pairSelect" onchange="changePair()">
+            <option value="classic">Clasico (X y O)</option>
+            <option value="animals">Animales (gato vs perro)</option>
+            <option value="fruits">Frutas (manzana vs naranja)</option>
+            <option value="space">Espacio (planeta vs cohete)</option>
+        </select>
+    </div>
+
+    <!-- Selectores de color personalizados -->
+    <div class="color-controls">
+        <div class="color-item">
+            <label for="cellColor1">Celda A</label>
+            <input type="color" id="cellColor1" value="#050505" onchange="updateColors()">
+        </div>
+        <div class="color-item">
+            <label for="cellColor2">Celda B</label>
+            <input type="color" id="cellColor2" value="#061a11" onchange="updateColors()">
+        </div>
+        <div class="color-item">
+            <label for="winnerColor">Linea ganadora</label>
+            <input type="color" id="winnerColor" value="#ffaa00" onchange="updateColors()">
+        </div>
+        <div class="color-item">
+            <label for="lineColor">Cuadricula</label>
+            <input type="color" id="lineColor" value="#bff0db" onchange="updateColors()">
+        </div>
+    </div>
+
+    <!-- Temporizador -->
+    <div class="timer-box" id="timerBox">
+        Tiempo: <span id="timer">3:00</span>
+    </div>
+
+    <!-- Turno actual -->
+    <div class="turn-display">
+        Turno: <span id="turnLabel">O</span>
+    </div>
+
+    <!-- Tablero — misma estructura que el original -->
+    <div class="board">
+        <table id="gameTable">
+            <tr>
+                <td><input type="button" onclick="active(this)"></td>
+                <td><input type="button" onclick="active(this)"></td>
+                <td><input type="button" onclick="active(this)"></td>
+            </tr>
+            <tr>
+                <td><input type="button" onclick="active(this)"></td>
+                <td><input type="button" onclick="active(this)"></td>
+                <td><input type="button" onclick="active(this)"></td>
+            </tr>
+            <tr>
+                <td><input type="button" onclick="active(this)"></td>
+                <td><input type="button" onclick="active(this)"></td>
+                <td><input type="button" onclick="active(this)"></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Mensaje ganador -->
+    <div id="message"></div>
+
+    <!-- Reiniciar -->
+    <button class="reset-btn" onclick="resetGame()">Reiniciar</button>
+
+    <script src="js/functions.js"></script>
+</body>
+</html>

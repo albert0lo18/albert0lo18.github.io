@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sierpinski - Juego del Caos</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <h1>Triángulo de Sierpinski</h1>
+
+    <div class="controles">
+        <div class="botones">
+            <button onclick="iniciarSimulacion()" id="btnInicio">Iniciar / Resetear</button>
+            <button onclick="alternarPausa()" id="btnPausa">Pausar</button>
+            <button onclick="alternarModoLento()" id="btnLento">Modo Lento: OFF</button>
+        </div>
+
+        <div class="stats">
+            <span>Dado: <strong id="valorDado">-</strong></span>
+            <span>Iteraciones: <strong id="contador">0</strong></span>
+        </div>
+    </div>
+
+    <canvas id="lienzo" width="1200" height="1000"></canvas>
+
+    <script src="js/script.js"></script>
+
+    <!-- Botón volver al menú -->
+    <a class="back-to-menu" href="../index.html">
+        <svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 6.5H2M5 3l-3 3.5L5 10"/>
+        </svg>
+        Menú
+    </a>
+
+</body>
+</html>

@@ -1,0 +1,281 @@
+/* ============================================
+   OCHO REINAS - Estilos principales
+   Estilo: blanco, minimalista, sin gradientes
+   ============================================ */
+
+/* Variables de color del tablero - modificables desde JS */
+:root {
+    --color-claro: #F5F0E8;              /* color de casillas claras */
+    --color-oscuro: #333333;             /* color de casillas oscuras */
+    --color-ataque: rgba(255,200,0,0.55);/* color de ruta de ataque */
+}
+
+/* Reset básico del cuerpo */
+*, *::before, *::after {
+    box-sizing: border-box; /* modelo de caja estándar */
+    margin: 0;              /* sin margen por defecto */
+    padding: 0;             /* sin padding por defecto */
+}
+
+/* Fondo blanco puro, fuente simple */
+body {
+    background-color: white;        /* fondo blanco total */
+    font-family: Arial, sans-serif; /* fuente sin serif limpia */
+    color: #111;                    /* texto casi negro */
+    min-height: 100vh;              /* ocupa toda la pantalla */
+    display: flex;                  /* contenedor flex */
+    justify-content: center;        /* centrado horizontal */
+    align-items: flex-start;        /* alineado arriba */
+    padding: 40px 20px;             /* espacio superior e inferior */
+}
+
+/* Contenedor principal: tablero + controles en fila */
+.main-container {
+    display: flex;           /* disposición en fila */
+    flex-direction: row;     /* fila horizontal */
+    align-items: flex-start; /* alineados desde arriba */
+    gap: 40px;               /* espacio entre tablero y panel */
+}
+
+/* ---- TABLERO ---- */
+
+/* Tabla del ajedrez */
+table {
+    border-collapse: collapse; /* sin espacios entre celdas */
+    border: 3px solid #111;    /* borde grueso negro */
+    table-layout: fixed;       /* columnas de ancho fijo */
+    width: 480px;              /* ancho total del tablero */
+    height: 480px;             /* alto total del tablero */
+    flex-shrink: 0;            /* no se reduce en flex */
+}
+
+/* Cada celda del tablero */
+td {
+    width: 60px;            /* ancho de cada celda */
+    height: 60px;           /* alto de cada celda */
+    text-align: center;     /* contenido centrado */
+    vertical-align: middle; /* centrado vertical */
+    font-size: 36px;        /* tamaño del símbolo de reina */
+    cursor: pointer;        /* cursor de mano al pasar */
+    padding: 0;             /* sin padding interno */
+    line-height: 60px;      /* altura de línea igual al alto */
+    position: relative;     /* para posicionamiento interno */
+    border: 1px solid rgba(0,0,0,0.12); /* borde sutil entre celdas */
+    user-select: none;      /* evitar selección de texto */
+}
+
+/* Casillas claras del patrón ajedrez */
+tr:nth-child(even) td:nth-child(odd),
+tr:nth-child(odd) td:nth-child(even) {
+    background-color: var(--color-claro); /* color claro alternado */
+}
+
+/* Casillas oscuras del patrón ajedrez */
+tr:nth-child(even) td:nth-child(even),
+tr:nth-child(odd) td:nth-child(odd) {
+    background-color: var(--color-oscuro); /* color oscuro alternado */
+}
+
+/* Celda con ruta de ataque activa — no se puede colocar reina aquí */
+td.atacada {
+    background-color: var(--color-ataque) !important; /* resaltado amarillo de ataque */
+    cursor: not-allowed;                              /* indica que no se puede colocar */
+}
+
+/* Imagen de reina dentro de celda */
+td img.reina-img {
+    width: 44px;          /* ancho de la imagen */
+    height: 44px;         /* alto de la imagen */
+    display: block;       /* bloque para centrar con margin */
+    margin: auto;         /* centrado automático */
+    pointer-events: none; /* la imagen no captura clics */
+}
+
+/* Símbolo X de ataque en texto (fallback sin imagen) */
+td.marcada-x {
+    color: rgba(0,0,0,0.3); /* color gris semitransparente */
+    font-size: 20px;        /* tamaño reducido del símbolo */
+}
+
+/* ---- PANEL DE CONTROLES ---- */
+
+/* Columna lateral derecha */
+.controls-column {
+    display: flex;          /* columna flex */
+    flex-direction: column; /* apilado vertical */
+    width: 230px;           /* ancho fijo del panel */
+    gap: 16px;              /* espacio entre secciones */
+}
+
+/* Título del juego */
+.titulo {
+    font-size: 20px;              /* tamaño de título */
+    font-weight: bold;            /* negrita */
+    letter-spacing: 1px;         /* espaciado de letras */
+    border-bottom: 3px solid #111;/* línea inferior decorativa */
+    padding-bottom: 8px;          /* espacio antes de la línea */
+    text-transform: uppercase;    /* mayúsculas */
+}
+
+/* Contador de reinas colocadas */
+.contador-container {
+    font-size: 15px;  /* tamaño del texto contador */
+    font-weight: bold;/* negrita */
+}
+
+/* Número grande del contador */
+.contador-container span {
+    font-size: 26px;  /* número más destacado */
+    font-weight: bold;/* negrita */
+}
+
+/* Mensaje de estado (victoria, solución cargada) */
+#mensaje-victoria {
+    font-size: 13px;              /* tamaño del mensaje */
+    font-weight: bold;            /* negrita */
+    min-height: 36px;             /* altura mínima para no saltar layout */
+    color: #111;                  /* color negro estándar */
+    border-left: 3px solid #111; /* barra decorativa izquierda */
+    padding-left: 8px;            /* espacio a la derecha de la barra */
+}
+
+/* Separador visual entre secciones */
+.seccion {
+    border-top: 2px solid #111; /* línea de separación fuerte */
+    padding-top: 12px;          /* espacio antes del contenido */
+}
+
+/* Título de cada sección */
+.seccion p {
+    margin-bottom: 8px;       /* espacio debajo del título */
+    font-weight: bold;        /* negrita */
+    font-size: 11px;          /* tamaño de etiqueta pequeño */
+    text-transform: uppercase;/* mayúsculas */
+    letter-spacing: 1px;      /* espaciado generoso */
+}
+
+/* Etiquetas de opciones */
+label {
+    display: block;  /* bloque para línea completa */
+    margin: 5px 0;   /* margen entre opciones */
+    cursor: pointer; /* cursor de mano */
+    font-size: 13px; /* tamaño estándar */
+}
+
+/* Fila de color + etiqueta */
+.color-row {
+    display: flex;      /* fila flex */
+    align-items: center;/* centrado vertical */
+    gap: 8px;           /* espacio entre etiqueta y selector */
+    margin: 6px 0;      /* margen vertical */
+    font-size: 13px;    /* tamaño del texto */
+}
+
+/* Inputs de tipo color para el tablero */
+input[type="color"] {
+    border: 2px solid #111; /* borde negro */
+    cursor: pointer;        /* cursor de mano */
+    width: 36px;            /* ancho del selector */
+    height: 24px;           /* alto del selector */
+    padding: 0;             /* sin padding */
+    border-radius: 0;       /* sin bordes redondeados */
+    background: none;       /* sin fondo extra */
+}
+
+/* Botón principal */
+.btn {
+    padding: 9px 12px;       /* espacio interior del botón */
+    cursor: pointer;         /* cursor de mano */
+    background: white;       /* fondo blanco */
+    color: #111;             /* texto negro */
+    border: 2px solid #111;  /* borde negro */
+    font-size: 12px;         /* tamaño de texto */
+    font-weight: bold;       /* negrita */
+    width: 100%;             /* ancho completo */
+    text-align: left;        /* texto a la izquierda */
+    letter-spacing: 0.3px;   /* espaciado sutil */
+    font-family: Arial, sans-serif; /* fuente consistente */
+}
+
+/* Hover de botón - inversión de colores */
+.btn:hover {
+    background: #111; /* fondo negro al pasar cursor */
+    color: white;     /* texto blanco al pasar cursor */
+}
+
+/* Botón presionado */
+.btn:active {
+    background: #444; /* gris oscuro al presionar */
+    color: white;     /* texto blanco al presionar */
+}
+
+/* Grupo de botones en fila */
+.btn-group {
+    display: flex; /* disposición en fila */
+    gap: 5px;      /* espacio entre botones */
+}
+
+/* Botón compacto para grupo */
+.btn-group .btn {
+    font-size: 11px;   /* texto más pequeño */
+    padding: 8px 4px;  /* menos padding horizontal */
+    text-align: center;/* texto centrado */
+}
+
+/* Radio button estilizado */
+input[type="radio"] {
+    margin-right: 6px; /* espacio entre radio y etiqueta */
+    cursor: pointer;   /* cursor de mano */
+    accent-color: #111;/* color del radio marcado */
+}
+
+/* Contenedor de opción de reina con imagen */
+.queen-option {
+    display: flex;    /* fila flex */
+    align-items: center;/* centrado vertical */
+    gap: 8px;         /* espacio entre miniatura y texto */
+}
+
+/* Miniatura de reina en selector */
+.queen-thumb {
+    width: 24px;         /* ancho miniatura */
+    height: 24px;        /* alto miniatura */
+    object-fit: contain; /* sin recorte de imagen */
+    vertical-align: middle;/* alineado al medio */
+    border: 1px solid #ccc;/* borde gris suave */
+}
+
+/* ---- BOTÓN VOLVER AL MENÚ ---- */
+
+/* Botón fijo arriba a la izquierda */
+.back-to-menu {
+    position: fixed;         /* posición fija en pantalla */
+    top: 14px;               /* distancia desde arriba */
+    left: 14px;              /* distancia desde la izquierda */
+    z-index: 9999;           /* siempre al frente */
+    display: inline-flex;    /* fila flex */
+    align-items: center;     /* centrado vertical */
+    gap: 6px;                /* espacio entre flecha y texto */
+    padding: 7px 14px;       /* espacio interior */
+    background: white;       /* fondo blanco */
+    border: 2px solid #111;  /* borde negro */
+    text-decoration: none;   /* sin subrayado */
+    color: #111;             /* texto negro */
+    font-family: Arial, sans-serif; /* fuente del proyecto */
+    font-size: 11px;         /* texto pequeño */
+    font-weight: bold;       /* negrita */
+    letter-spacing: 0.5px;  /* espaciado leve */
+    text-transform: uppercase;/* mayúsculas */
+}
+
+/* Hover del botón volver */
+.back-to-menu:hover {
+    background: #111; /* fondo negro al pasar */
+    color: white;     /* texto blanco al pasar */
+}
+
+/* Flecha SVG del botón volver */
+.back-to-menu svg {
+    width: 12px;  /* ancho del ícono */
+    height: 12px; /* alto del ícono */
+}

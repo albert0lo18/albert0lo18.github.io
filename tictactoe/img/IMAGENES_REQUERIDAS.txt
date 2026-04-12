@@ -1,0 +1,20 @@
+IMAGENES REQUERIDAS — Carpeta: img/
+=====================================
+
+Ya incluidas (originales del juego):
+  X.png          -> Pieza X original
+  O.png          -> Pieza O original
+  tablero.png    -> Imagen de tablero (no usada en nueva version)
+
+Agregar para pares extra (PNG con fondo transparente, ~200x200px):
+  cat.png        -> Gato    (Jugador O, par Animales)
+  dog.png        -> Perro   (Jugador X, par Animales)
+  apple.png      -> Manzana (Jugador O, par Frutas)
+  orange.png     -> Naranja (Jugador X, par Frutas)
+  planet.png     -> Planeta (Jugador O, par Espacio)
+  rocket.png     -> Cohete  (Jugador X, par Espacio)
+
+Sin esas imagenes, el selector de pares muestra celdas vacias.
+El par "Clasico (X y O)" siempre funciona con los archivos originales.
+
+Fuentes recomendadas: flaticon.com / icons8.com (iconos PNG gratis)

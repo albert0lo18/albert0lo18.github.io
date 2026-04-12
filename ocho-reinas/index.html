@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ocho Reinas</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="js/functions.js" defer></script>
+</head>
+<body>
+
+    <div class="main-container">
+
+        <!-- ===== TABLERO 8x8 ===== -->
+        <table id="tablero">
+            <tr>
+                <td onclick="cellClick(this,0,0)" onmouseover="cambiar(0,0)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,0,1)" onmouseover="cambiar(0,1)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,0,2)" onmouseover="cambiar(0,2)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,0,3)" onmouseover="cambiar(0,3)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,0,4)" onmouseover="cambiar(0,4)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,0,5)" onmouseover="cambiar(0,5)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,0,6)" onmouseover="cambiar(0,6)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,0,7)" onmouseover="cambiar(0,7)" onmouseleave="limpiar()"></td>
+            </tr>
+            <tr>
+                <td onclick="cellClick(this,1,0)" onmouseover="cambiar(1,0)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,1,1)" onmouseover="cambiar(1,1)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,1,2)" onmouseover="cambiar(1,2)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,1,3)" onmouseover="cambiar(1,3)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,1,4)" onmouseover="cambiar(1,4)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,1,5)" onmouseover="cambiar(1,5)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,1,6)" onmouseover="cambiar(1,6)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,1,7)" onmouseover="cambiar(1,7)" onmouseleave="limpiar()"></td>
+            </tr>
+            <tr>
+                <td onclick="cellClick(this,2,0)" onmouseover="cambiar(2,0)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,2,1)" onmouseover="cambiar(2,1)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,2,2)" onmouseover="cambiar(2,2)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,2,3)" onmouseover="cambiar(2,3)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,2,4)" onmouseover="cambiar(2,4)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,2,5)" onmouseover="cambiar(2,5)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,2,6)" onmouseover="cambiar(2,6)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,2,7)" onmouseover="cambiar(2,7)" onmouseleave="limpiar()"></td>
+            </tr>
+            <tr>
+                <td onclick="cellClick(this,3,0)" onmouseover="cambiar(3,0)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,3,1)" onmouseover="cambiar(3,1)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,3,2)" onmouseover="cambiar(3,2)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,3,3)" onmouseover="cambiar(3,3)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,3,4)" onmouseover="cambiar(3,4)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,3,5)" onmouseover="cambiar(3,5)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,3,6)" onmouseover="cambiar(3,6)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,3,7)" onmouseover="cambiar(3,7)" onmouseleave="limpiar()"></td>
+            </tr>
+            <tr>
+                <td onclick="cellClick(this,4,0)" onmouseover="cambiar(4,0)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,4,1)" onmouseover="cambiar(4,1)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,4,2)" onmouseover="cambiar(4,2)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,4,3)" onmouseover="cambiar(4,3)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,4,4)" onmouseover="cambiar(4,4)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,4,5)" onmouseover="cambiar(4,5)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,4,6)" onmouseover="cambiar(4,6)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,4,7)" onmouseover="cambiar(4,7)" onmouseleave="limpiar()"></td>
+            </tr>
+            <tr>
+                <td onclick="cellClick(this,5,0)" onmouseover="cambiar(5,0)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,5,1)" onmouseover="cambiar(5,1)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,5,2)" onmouseover="cambiar(5,2)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,5,3)" onmouseover="cambiar(5,3)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,5,4)" onmouseover="cambiar(5,4)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,5,5)" onmouseover="cambiar(5,5)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,5,6)" onmouseover="cambiar(5,6)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,5,7)" onmouseover="cambiar(5,7)" onmouseleave="limpiar()"></td>
+            </tr>
+            <tr>
+                <td onclick="cellClick(this,6,0)" onmouseover="cambiar(6,0)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,6,1)" onmouseover="cambiar(6,1)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,6,2)" onmouseover="cambiar(6,2)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,6,3)" onmouseover="cambiar(6,3)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,6,4)" onmouseover="cambiar(6,4)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,6,5)" onmouseover="cambiar(6,5)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,6,6)" onmouseover="cambiar(6,6)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,6,7)" onmouseover="cambiar(6,7)" onmouseleave="limpiar()"></td>
+            </tr>
+            <tr>
+                <td onclick="cellClick(this,7,0)" onmouseover="cambiar(7,0)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,7,1)" onmouseover="cambiar(7,1)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,7,2)" onmouseover="cambiar(7,2)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,7,3)" onmouseover="cambiar(7,3)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,7,4)" onmouseover="cambiar(7,4)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,7,5)" onmouseover="cambiar(7,5)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,7,6)" onmouseover="cambiar(7,6)" onmouseleave="limpiar()"></td>
+                <td onclick="cellClick(this,7,7)" onmouseover="cambiar(7,7)" onmouseleave="limpiar()"></td>
+            </tr>
+        </table>
+
+        <!-- ===== PANEL DE CONTROLES ===== -->
+        <div class="controls-column">
+
+            <div class="titulo">Ocho Reinas</div>
+
+            <!-- Contador -->
+            <div class="contador-container">
+                Reinas: <span id="num-reinas">0</span> / 8
+            </div>
+
+            <!-- Mensaje de estado -->
+            <div id="mensaje-victoria"></div>
+
+            <!-- Botón reiniciar -->
+            <button class="btn" onclick="reiniciarTablero()">↺ Reiniciar juego</button>
+
+            <!-- SECCIÓN: Selección de imagen de reina (NUEVO) -->
+            <div class="seccion">
+                <p>Imagen de reina</p>
+                <label>
+                    <input type="radio" name="imgReina" value="1" checked onchange="cambiarImagenReina(1)">
+                    <span class="queen-option">
+                        <img src="img/reina.png" class="queen-thumb" alt="Reina 1"> Reina clásica
+                    </span>
+                </label>
+                <label>
+                    <input type="radio" name="imgReina" value="2" onchange="cambiarImagenReina(2)">
+                    <span class="queen-option">
+                        <img src="img/reina-32.png" class="queen-thumb" alt="Reina 2"> Reina pequeña
+                    </span>
+                </label>
+                <label>
+                    <input type="radio" name="imgReina" value="3" onchange="cambiarImagenReina(3)">
+                    <span class="queen-option">
+                        ♕ Símbolo Unicode
+                    </span>
+                </label>
+            </div>
+
+            <!-- SECCIÓN: Colores del tablero (MEJORADO) -->
+            <div class="seccion">
+                <p>Colores del tablero</p>
+                <div class="color-row">
+                    <label for="colorClaro">Casilla clara:</label>
+                    <input type="color" id="colorClaro" value="#F5F0E8" onchange="actualizarTablero()">
+                </div>
+                <div class="color-row">
+                    <label for="colorOscuro">Casilla oscura:</label>
+                    <input type="color" id="colorOscuro" value="#333333" onchange="actualizarTablero()">
+                </div>
+            </div>
+
+            <!-- SECCIÓN: Soluciones automáticas (MEJORADO con 3 válidas) -->
+            <div class="seccion">
+                <p>Soluciones automáticas</p>
+                <div class="btn-group">
+                    <button class="btn" onclick="ponerSolucion('04752613')">Sol. 1</button>
+                    <button class="btn" onclick="ponerSolucion('17346025')">Sol. 2</button>
+                    <button class="btn" onclick="ponerSolucion('35720641')">Sol. 3</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ===== BOTÓN VOLVER AL MENÚ ===== -->
+    <a class="back-to-menu" href="../index.html">
+        <svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 6.5H2M5 3l-3 3.5L5 10"/>
+        </svg>
+        Menú
+    </a>
+
+</body>
+</html>

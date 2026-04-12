@@ -1,0 +1,131 @@
+/* Reset básico para todos los elementos */
+*, *::before, *::after {
+    box-sizing: border-box; /* modelo de caja estándar */
+    margin: 0;              /* sin margen por defecto */
+    padding: 0;             /* sin padding por defecto */
+}
+
+/* Cuerpo: fondo blanco, fuente limpia */
+body {
+    font-family: Arial, sans-serif; /* fuente igual al menú principal */
+    display: flex;                  /* columna flex centrada */
+    flex-direction: column;         /* apilado vertical */
+    align-items: center;            /* centrado horizontal */
+    background-color: white;        /* fondo blanco puro */
+    color: #111;                    /* texto casi negro */
+    margin: 0;                      /* sin margen externo */
+    padding: 40px 20px 30px;        /* espacio interno */
+}
+
+/* Título principal */
+h1 {
+    font-size: 20px;              /* tamaño moderado */
+    font-weight: bold;            /* negrita */
+    text-transform: uppercase;    /* mayúsculas como el menú */
+    letter-spacing: 1px;          /* espaciado de letras */
+    border-bottom: 3px solid #111;/* línea decorativa inferior */
+    padding-bottom: 8px;          /* espacio antes de la línea */
+    margin-bottom: 20px;          /* espacio inferior */
+    color: #111;                  /* texto negro */
+}
+
+/* Contenedor de controles */
+.controles {
+    text-align: center;   /* contenido centrado */
+    margin-bottom: 20px;  /* espacio inferior antes del canvas */
+    width: 100%;          /* ancho completo */
+    max-width: 600px;     /* máximo para no estirarse demasiado */
+}
+
+/* Grupo de botones */
+.botones {
+    display: flex;      /* fila de botones */
+    gap: 8px;           /* espacio entre botones */
+    justify-content: center; /* centrado horizontal */
+    margin-bottom: 12px;     /* espacio antes de las stats */
+}
+
+/* Estilo base de todos los botones */
+button {
+    padding: 9px 16px;       /* espacio interior */
+    font-size: 12px;         /* tamaño de texto */
+    font-weight: bold;       /* negrita */
+    font-family: Arial, sans-serif; /* fuente consistente */
+    cursor: pointer;         /* cursor de mano */
+    border: 2px solid #111;  /* borde negro */
+    background: white;       /* fondo blanco */
+    color: #111;             /* texto negro */
+    text-transform: uppercase;   /* mayúsculas */
+    letter-spacing: 0.5px;       /* espaciado sutil */
+}
+
+/* Hover de todos los botones: inversión */
+button:hover {
+    background: #111; /* fondo negro al pasar cursor */
+    color: white;     /* texto blanco al pasar cursor */
+}
+
+/* Estado activo (modo lento encendido, pausado) */
+button.activo,
+.btn-reanudar {
+    background: #111 !important; /* fondo negro cuando está activo */
+    color: white !important;     /* texto blanco cuando está activo */
+}
+
+/* Fila de estadísticas */
+.stats {
+    display: flex;              /* fila flex */
+    justify-content: center;    /* centrado */
+    gap: 30px;                  /* espacio entre stat items */
+    font-size: 13px;            /* tamaño de texto */
+    border-top: 2px solid #111; /* línea separadora superior */
+    padding-top: 10px;          /* espacio sobre la línea */
+    color: #111;                /* texto negro */
+}
+
+/* Números destacados en las stats */
+.stats strong {
+    font-size: 15px; /* número ligeramente más grande */
+}
+
+/* Canvas del triángulo */
+canvas {
+    background-color: white;  /* fondo blanco */
+    border: 2px solid #111;   /* borde negro simple */
+    display: block;            /* bloque para centrar con margin */
+    max-width: 90vw;           /* responsivo en pantallas pequeñas */
+    height: auto;              /* alto proporcional */
+}
+
+/* Botón volver al menú */
+.back-to-menu {
+    position: fixed;         /* fijo en pantalla */
+    top: 14px;               /* distancia desde arriba */
+    left: 14px;              /* distancia desde la izquierda */
+    z-index: 9999;           /* siempre al frente */
+    display: inline-flex;    /* fila flex */
+    align-items: center;     /* centrado vertical */
+    gap: 6px;                /* espacio entre flecha y texto */
+    padding: 7px 14px;       /* espacio interior */
+    background: white;       /* fondo blanco */
+    border: 2px solid #111;  /* borde negro */
+    text-decoration: none;   /* sin subrayado */
+    color: #111;             /* texto negro */
+    font-family: Arial, sans-serif; /* fuente del proyecto */
+    font-size: 11px;         /* texto pequeño */
+    font-weight: bold;       /* negrita */
+    letter-spacing: 0.5px;  /* espaciado leve */
+    text-transform: uppercase; /* mayúsculas */
+}
+
+/* Hover del botón volver */
+.back-to-menu:hover {
+    background: #111; /* fondo negro al pasar */
+    color: white;     /* texto blanco al pasar */
+}
+
+/* Ícono SVG del botón volver */
+.back-to-menu svg {
+    width: 12px;  /* ancho del ícono */
+    height: 12px; /* alto del ícono */
+}

@@ -1,0 +1,31 @@
+<!-- ============================================ -->
+<!--   BOTON "VOLVER AL MENU" — PEGAR EN TU PROYECTO  -->
+<!-- ============================================ -->
+
+<!-- PASO 1: Pega esto dentro de tu <head> o en tu archivo .css -->
+<style>
+.back-btn {
+    position: fixed;        /* Fijo en la pantalla */
+    top: 14px;              /* Distancia desde arriba */
+    left: 14px;             /* Distancia desde la izquierda */
+    padding: 7px 13px;      /* Espacio interno */
+    background-color: white; /* Fondo blanco */
+    border: 2px solid #111; /* Borde oscuro */
+    color: #111;            /* Color del texto */
+    text-decoration: none;  /* Sin subrayado */
+    font-family: Arial, sans-serif; /* Fuente simple */
+    font-size: 13px;        /* Tamanio de texto */
+    z-index: 999;           /* Siempre visible encima de todo */
+}
+.back-btn:hover {
+    background-color: #111; /* Fondo oscuro al pasar el mouse */
+    color: white;           /* Texto blanco al pasar el mouse */
+}
+</style>
+
+<!-- PASO 2: Pega esto dentro de tu <body>, donde quieras el boton -->
+<!-- IMPORTANTE: ajusta el href segun donde este tu index.html -->
+<a class="back-btn" href="../index.html">&larr; Menu</a>
+
+<!-- Si tu proyecto esta en la raiz (no en subcarpeta), usa: -->
+<!-- <a class="back-btn" href="index.html">&larr; Menu</a> -->
