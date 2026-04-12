@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Menu Principal</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="menu.js" defer></script>
+</head>
+<body>
+
+    <!-- Columna izquierda: lista de programas -->
+    <div class="sidebar">
+
+        <h1>Menu Principal</h1>
+        <p>Pasa el cursor para previsualizar.</p>
+
+        <nav class="menu">
+            <a href="tictactoe/index.html"
+               onmouseover="previsualizarEn('tictactoe/index.html', this)"
+               onmouseleave="restaurarActivo()">
+                Tic Tac Toe
+            </a>
+            <a href="triangulo/index.html"
+               onmouseover="previsualizarEn('triangulo/index.html', this)"
+               onmouseleave="restaurarActivo()">
+                Triangulo de Sierpinski
+            </a>
+            <a href="ocho-reinas/index.html"
+               onmouseover="previsualizarEn('ocho-reinas/index.html', this)"
+               onmouseleave="restaurarActivo()">
+                Ocho Reinas
+            </a>
+        </nav>
+
+    </div>
+
+    <!-- Columna derecha: iframe de previsualización -->
+    <div class="preview-area">
+        <iframe id="preview" src="" title="Previsualización"></iframe>
+        <div id="placeholder" class="placeholder">
+            <span>← Pasa el cursor sobre un programa</span>
+        </div>
+    </div>
+
+</body>
+</html>

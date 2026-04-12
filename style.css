@@ -1,0 +1,128 @@
+/* Reset básico para todos los elementos */
+*, *::before, *::after {
+    box-sizing: border-box; /* modelo de caja estándar */
+    margin: 0;              /* sin margen por defecto */
+    padding: 0;             /* sin padding por defecto */
+}
+
+/* Cuerpo: layout de dos columnas en toda la pantalla */
+body {
+    display: flex;              /* disposición en fila */
+    flex-direction: row;        /* izquierda y derecha */
+    height: 100vh;              /* altura completa de la ventana */
+    width: 100vw;               /* ancho completo de la ventana */
+    background-color: white;    /* fondo blanco */
+    font-family: Arial, sans-serif; /* fuente simple y limpia */
+    color: #111;                /* texto casi negro */
+    overflow: hidden;           /* sin scroll en el body */
+}
+
+/* ---- COLUMNA IZQUIERDA (30%) ---- */
+
+/* Sidebar con los botones del menú */
+.sidebar {
+    width: 30%;              /* ocupa el 30% del ancho */
+    min-width: 200px;        /* ancho mínimo para no colapsar */
+    padding: 40px 30px;      /* espacio interior generoso */
+    border-right: 2px solid #111; /* línea divisoria derecha */
+    display: flex;           /* columna flex */
+    flex-direction: column;  /* apilado vertical */
+    gap: 20px;               /* espacio entre bloques */
+    overflow-y: auto;        /* scroll si el contenido es muy largo */
+}
+
+/* Título principal del menú */
+.sidebar h1 {
+    font-size: 22px;      /* tamaño moderado */
+    font-weight: bold;    /* negrita */
+    letter-spacing: 1px;  /* espaciado de letras */
+    text-transform: uppercase; /* mayúsculas */
+    border-bottom: 3px solid #111; /* línea decorativa abajo */
+    padding-bottom: 10px; /* espacio antes de la línea */
+}
+
+/* Subtítulo / instrucción */
+.sidebar p {
+    font-size: 13px; /* texto pequeño */
+    color: #555;     /* gris medio */
+}
+
+/* Contenedor de los botones de navegación */
+.menu {
+    display: flex;          /* columna flex */
+    flex-direction: column; /* apilado vertical */
+    gap: 10px;              /* espacio entre botones */
+}
+
+/* Cada botón del menú */
+.menu a {
+    display: block;          /* bloque completo */
+    padding: 11px 14px;      /* espacio interior cómodo */
+    background-color: white; /* fondo blanco */
+    border: 2px solid #111;  /* borde negro */
+    text-decoration: none;   /* sin subrayado */
+    color: #111;             /* texto negro */
+    font-size: 14px;         /* tamaño estándar */
+    font-weight: bold;       /* negrita */
+    letter-spacing: 0.3px;   /* espaciado sutil */
+    transition: background 0.1s, color 0.1s; /* transición de hover */
+}
+
+/* Hover del botón: inversión de colores */
+.menu a:hover {
+    background-color: #111; /* fondo negro al pasar cursor */
+    color: white;           /* texto blanco al pasar cursor */
+}
+
+/* Botón activo: el programa que está en el iframe */
+.menu a.activo {
+    background-color: #111; /* fondo negro cuando está activo */
+    color: white;           /* texto blanco cuando está activo */
+}
+
+/* ---- COLUMNA DERECHA (70%) ---- */
+
+/* Área de previsualización del iframe */
+.preview-area {
+    width: 70%;         /* ocupa el 70% del ancho */
+    height: 100%;       /* altura completa */
+    position: relative; /* para posicionar el placeholder encima */
+    background: white;  /* fondo blanco */
+}
+
+/* El iframe de previsualización */
+#preview {
+    width: 100%;              /* ancho completo del contenedor */
+    height: 100%;             /* alto completo del contenedor */
+    border: none;             /* sin borde propio del iframe */
+    display: block;           /* bloque sin espacio extra */
+    background: white;        /* fondo blanco antes de cargar */
+    pointer-events: none;     /* deshabilita todos los clics e interacciones */
+}
+
+/* Mensaje de placeholder cuando no hay programa seleccionado */
+.placeholder {
+    position: absolute;  /* posición absoluta sobre el iframe */
+    top: 0;              /* desde arriba */
+    left: 0;             /* desde la izquierda */
+    width: 100%;         /* ancho completo */
+    height: 100%;        /* alto completo */
+    display: flex;       /* centrado con flex */
+    align-items: center; /* centrado vertical */
+    justify-content: center; /* centrado horizontal */
+    background: white;   /* fondo blanco sólido */
+    pointer-events: none;/* no bloquea interacciones */
+}
+
+/* Texto del placeholder */
+.placeholder span {
+    font-size: 14px;  /* texto pequeño */
+    color: #999;      /* gris claro */
+    font-style: italic; /* cursiva */
+    letter-spacing: 0.5px; /* espaciado sutil */
+}
+
+/* Placeholder oculto cuando hay contenido */
+.placeholder.oculto {
+    display: none; /* quita el placeholder de la vista */
+}
