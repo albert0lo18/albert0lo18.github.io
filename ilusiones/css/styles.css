@@ -1,0 +1,175 @@
+ /* Reset básico para todos los elementos */
+*, *::before, *::after {
+    box-sizing: border-box; /* modelo de caja estándar */
+    margin: 0;              /* sin margen por defecto */
+    padding: 0;             /* sin padding por defecto */
+}
+
+body {
+    background-color: white;    /* fondo blanco */
+    color: #111;                /* texto casi negro */
+    font-family: Arial, sans-serif; /* fuente simple y limpia */
+    min-height: 100vh;          /* altura mínima completa de la ventana */
+    padding: 2rem;              /* espacio interior general */
+}
+
+/* ---- CABECERA ---- */
+header {
+    text-align: center;         /* texto centrado */
+    margin-bottom: 3rem;        /* espacio debajo del header */
+    padding: 2rem 0;            /* espacio interior vertical */
+    border-bottom: 3px solid #111; /* línea divisoria inferior */
+}
+
+/* Título principal */
+header h1 {
+    font-size: clamp(2rem, 5vw, 4rem); /* tamaño fluido según ventana */
+    font-weight: 300;           /* peso ligero */
+    letter-spacing: 0.3em;      /* espaciado amplio entre letras */
+    color: #111;                /* texto casi negro */
+    text-transform: uppercase;  /* mayúsculas */
+    margin-bottom: 0.5rem;      /* espacio bajo el título */
+}
+
+/* Subtítulo / descripción */
+header p {
+    font-family: Arial, sans-serif; /* fuente simple y limpia */
+    font-size: 1rem;            /* tamaño estándar */
+    color: #555;                /* gris medio */
+    letter-spacing: 0.2em;      /* espaciado sutil */
+}
+
+/* ---- TÍTULO DE SECCIÓN ---- */
+.section-title {
+    font-family: Arial, sans-serif; /* fuente simple y limpia */
+    font-size: 1rem;            /* tamaño estándar */
+    color: #555;                /* gris medio */
+    letter-spacing: 0.3em;      /* espaciado amplio */
+    text-transform: uppercase;  /* mayúsculas */
+    margin: 3rem 0 1.5rem;      /* espacio arriba y abajo */
+    padding-left: 0.5rem;       /* espacio antes del texto */
+    border-left: 2px solid #111; /* línea decorativa izquierda */
+}
+
+/* ---- GRILLA DE TARJETAS ---- */
+.grid {
+    display: grid;              /* disposición en grilla */
+    grid-template-columns: repeat(4, 1fr); /* 4 columnas iguales */
+    gap: 1.5rem;                /* espacio entre tarjetas */
+    margin-bottom: 2rem;        /* espacio bajo la grilla */
+}
+
+/* Tarjeta individual */
+.card {
+    background: white;          /* fondo blanco */
+    border: 2px solid #111;     /* borde negro */
+    border-radius: 0;           /* sin esquinas redondeadas */
+    overflow: hidden;           /* recorta el contenido desbordante */
+    cursor: pointer;            /* cursor de mano al pasar */
+    transition: background 0.1s, color 0.1s; /* transición de hover */
+}
+
+/* Hover de la tarjeta: inversión de colores */
+.card:hover {
+    background-color: #111;     /* fondo negro al pasar cursor */
+    color: white;               /* texto blanco al pasar cursor */
+}
+
+/* Área de previsualización del canvas o svg */
+.canvas-wrap {
+    width: 100%;                /* ancho completo de la tarjeta */
+    aspect-ratio: 1;            /* proporción cuadrada */
+    display: flex;              /* centrado con flex */
+    align-items: center;        /* centrado vertical */
+    justify-content: center;    /* centrado horizontal */
+    background: white;          /* fondo blanco */
+    position: relative;         /* para posicionar elementos encima */
+    overflow: hidden;           /* recorta lo que sobresale */
+}
+
+/* Canvas y SVG ocupan todo el espacio disponible */
+.canvas-wrap canvas,
+.canvas-wrap svg {
+    width: 100%;                /* ancho completo del contenedor */
+    height: 100%;               /* alto completo del contenedor */
+    display: block;             /* bloque sin espacio extra */
+}
+
+/* Etiqueta inferior de la tarjeta */
+.card-label {
+    padding: 11px 14px;         /* espacio interior cómodo */
+    font-family: Arial, sans-serif; /* fuente simple y limpia */
+    font-size: 0.7rem;          /* texto pequeño */
+    font-weight: bold;          /* negrita */
+    color: #111;                /* texto casi negro */
+    letter-spacing: 0.15em;     /* espaciado sutil */
+    border-top: 2px solid #111; /* línea divisoria superior */
+}
+
+/* Etiqueta blanca cuando la tarjeta está en hover */
+.card:hover .card-label {
+    color: white;               /* texto blanco al pasar cursor */
+}
+
+/* ---- ANIMACIONES ---- */
+
+/* Rotación continua hacia adelante */
+.rotating { animation: spin 8s linear infinite; }
+/* Rotación continua en reversa, más lenta */
+.rotating-rev { animation: spin 12s linear infinite reverse; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* Parpadeo suave de opacidad */
+.pulse { animation: pulse 3s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+/* Desplazamiento lateral suave */
+.drift { animation: drift 6s ease-in-out infinite alternate; }
+@keyframes drift { from { transform: translateX(-5px); } to { transform: translateX(5px); } }
+
+/* ---- PIE DE PÁGINA ---- */
+footer {
+    text-align: center;         /* texto centrado */
+    margin-top: 4rem;           /* espacio encima del footer */
+    padding-top: 2rem;          /* espacio interior superior */
+    border-top: 3px solid #111; /* línea divisoria superior */
+    font-family: Arial, sans-serif; /* fuente simple y limpia */
+    font-size: 0.65rem;         /* texto pequeño */
+    color: #555;                /* gris medio */
+    letter-spacing: 0.2em;      /* espaciado sutil */
+}
+
+/* ---- BOTÓN VOLVER AL MENÚ ---- */
+
+/* Botón fijo arriba a la izquierda */
+.back-to-menu {
+    position: fixed;         /* posición fija en pantalla */
+    top: 20px;               /* distancia desde arriba */
+    left: 20px;              /* distancia desde la izquierda */
+    z-index: 9999;           /* siempre al frente */
+    display: inline-flex;    /* fila flex */
+    align-items: center;     /* centrado vertical */
+    gap: 6px;                /* espacio entre flecha y texto */
+    padding: 7px 14px;       /* espacio interior */
+    background: white;       /* fondo blanco */
+    border: 2px solid #111;  /* borde negro */
+    text-decoration: none;   /* sin subrayado */
+    color: #111;             /* texto negro */
+    font-family: Arial, sans-serif; /* fuente del proyecto */
+    font-size: 11px;         /* texto pequeño */
+    font-weight: bold;       /* negrita */
+    letter-spacing: 0.5px;  /* espaciado leve */
+    text-transform: uppercase;/* mayúsculas */
+}
+
+/* Hover del botón volver */
+.back-to-menu:hover {
+    background: #111; /* fondo negro al pasar */
+    color: white;     /* texto blanco al pasar */
+}
+
+/* Flecha SVG del botón volver */
+.back-to-menu svg {
+    width: 12px;  /* ancho del ícono */
+    height: 12px; /* alto del ícono */
+}
